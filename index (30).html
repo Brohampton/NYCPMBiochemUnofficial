@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NYCPM Unofficial Biochemistry</title>
+<meta name="description" content="A student-built biochemistry reference: interactive metabolic pathway maps and clinical explanations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBFAF6; --panel:#FFFFFF; --ink:#1B1E22; --muted:#5E646C; --line:#E2DFD6; --line2:#CFCBC0;
+  --accent:#0E5A5A; --accent-soft:#E4F0EE; --gold:#B58100;
+  --c-gly:#1F5FA8; --bg-gly:#E8F1FB;
+  --c-gng:#0E7490; --bg-gng:#E2F4F8;
+  --c-tca:#15803D; --bg-tca:#E7F5EB;
+  --c-pdh:#475569; --bg-pdh:#EDF0F4;
+  --c-lactate:#BE185D; --bg-lactate:#FCE9F1;
+  --c-ethanol:#8A5A2B; --bg-ethanol:#F6EEE4;
+  --c-bpg:#6D28D9; --bg-bpg:#F0EAFD;
+  --c-shuttle:#1E3A8A; --bg-shuttle:#E8EDFA;
+  --c-shared:#3F3F3C; --bg-shared:#EFEEE9;
+  --st-irr:#B3261E; --st-rl:#B58100; --st-con:#EA580C; --st-mute:#8B8E93;
+  --act:#2F6B10; --inh:#B3261E;
+  --radius:14px; --shadow:0 10px 30px rgba(20,25,30,.09);
+}
+html[data-theme="dark"]{
+  --bg:#12151A; --panel:#191D24; --ink:#EAEAE6; --muted:#A3A9B2; --line:#2A3038; --line2:#39414B;
+  --accent:#5FC9BE; --accent-soft:#12312F; --gold:#E4B93C;
+  --c-gly:#8DBCEE; --bg-gly:#10263F;
+  --c-gng:#6FD0E6; --bg-gng:#0A2F38;
+  --c-tca:#79D18F; --bg-tca:#0D2F1A;
+  --c-pdh:#A7B2C2; --bg-pdh:#232A33;
+  --c-lactate:#F394BC; --bg-lactate:#3A0F24;
+  --c-ethanol:#D6A877; --bg-ethanol:#331F0E;
+  --c-bpg:#B79BF5; --bg-bpg:#241442;
+  --c-shuttle:#93AEF0; --bg-shuttle:#131D3D;
+  --c-shared:#D7D5CD; --bg-shared:#262A2F;
+  --st-irr:#F09595; --st-rl:#E4B93C; --st-con:#FB923C; --st-mute:#8E949C;
+  --act:#9ACB5F; --inh:#F09595;
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top,0px)}
+img{max-width:100%;height:auto}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(2rem,5vw,3.4rem)}
+h2{font-size:clamp(1.4rem,3vw,2.1rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em}
+/* ---------- header ---------- */
+header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(1.3) blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:16px;min-height:64px;padding-top:env(safe-area-inset-top,0px)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:"Fraunces",serif;font-size:1.06rem;font-weight:600;white-space:nowrap}
+.brand .dot{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#fff;font-size:.72rem;font-family:"IBM Plex Sans";font-weight:600}
+html[data-theme="dark"] .brand .dot{color:#0d1b1a}
+nav.main{margin-left:auto;display:flex;align-items:center;gap:4px}
+nav.main a{padding:9px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:.94rem;font-weight:500;white-space:nowrap}
+nav.main a:hover{color:var(--ink);background:var(--panel)}
+nav.main a.on{color:var(--ink);background:var(--accent-soft)}
+.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;
+  height:38px;min-width:38px;padding:0 12px;cursor:pointer;font:inherit;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.iconbtn:hover{color:var(--ink);border-color:var(--line2)}
+.menutoggle{display:none}
+@media (max-width:860px){
+  nav.main{position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;background:var(--bg);
+    border-bottom:1px solid var(--line);padding:8px 16px 16px;transform:translateY(-140%);transition:transform .25s ease;box-shadow:var(--shadow)}
+  nav.main.open{transform:translateY(0)}
+  nav.main a{padding:14px 12px;border-radius:10px;font-size:1.02rem}
+  .menutoggle{display:inline-flex}
+}
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 22px;
+  font:inherit;font-weight:500;cursor:pointer;text-decoration:none;border:1px solid transparent;transition:.15s}
+.btn.primary{background:var(--accent);color:#fff}
+html[data-theme="dark"] .btn.primary{color:#0d1b1a}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:var(--line2);color:var(--ink);background:var(--panel)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.small{padding:8px 14px;font-size:.9rem}
+.btn.danger{background:transparent;border-color:var(--inh);color:var(--inh)}
+/* ---------- home ---------- */
+.hero{padding:clamp(48px,8vw,96px) 0 clamp(36px,6vw,64px)}
+.eyebrow{color:var(--accent);font-weight:600;font-size:.9rem;margin-bottom:14px}
+.hero p.lede{font-size:clamp(1.05rem,2.2vw,1.28rem);color:var(--muted);max-width:60ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cards{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));padding-bottom:64px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;text-decoration:none;display:block;transition:.18s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--line2)}
+.card h3{margin-bottom:.35em}
+.card p{color:var(--muted);margin:0;font-size:.97rem}
+.swatchrow{display:flex;gap:6px;margin-bottom:16px}
+.swatchrow i{width:26px;height:8px;border-radius:4px;display:block}
+.notice{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;
+  background:var(--panel);padding:16px 20px;color:var(--muted);font-size:.93rem;margin:0 0 48px}
+/* ---------- viewer ---------- */
+.pagehead{padding:34px 0 14px}
+.pagehead p{color:var(--muted);max-width:70ch;margin:0}
+.viewer{position:relative;height:min(80vh,920px);min-height:520px;border:1px solid var(--line);border-radius:18px;
+  background:var(--panel);overflow:hidden;touch-action:none;margin-bottom:12px}
+.stage{position:absolute;top:0;left:0;width:1560px;height:3100px;transform-origin:0 0;will-change:transform}
+.stage svg{display:block;width:1560px;height:3100px}
+.zoombar{position:absolute;right:12px;bottom:12px;display:flex;gap:6px;z-index:12}
+.zoombar button{width:40px;height:40px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);
+  color:var(--ink);font-size:1.05rem;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow)}
+.zoombar button.wide{width:auto;padding:0 14px;font-size:.86rem}
+.panel{position:absolute;z-index:15;width:min(310px,calc(100% - 24px));max-height:calc(100% - 20px);display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);font-size:.86rem;overflow:hidden}
+/* head */
+.panel .phead{flex:none;display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:grab;background:var(--panel);border-bottom:1px solid var(--line);
+  user-select:none;touch-action:none}
+.panel .phead b{font-weight:600;font-size:.88rem;flex:1}
+.panel .phead .grip{color:var(--muted);letter-spacing:2px;font-size:.8rem}
+.panel .phead button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px}
+.panel .phead button:hover{background:var(--accent-soft);color:var(--ink)}
+.panel .pbody{padding:12px;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.panel.collapsed .pbody{display:none}
+.panel.collapsed{width:auto;max-width:calc(100% - 24px)}
+.panel.collapsed .phead b{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel .grp{margin:0 0 12px}
+.panel .grp:last-child{margin-bottom:0}
+.panel .grp h4{margin:0 0 7px;font:600 .74rem/1.4 "IBM Plex Sans";letter-spacing:.06em;color:var(--muted);text-transform:none}
+.panel label{display:flex;align-items:center;gap:8px;padding:4px 2px;cursor:pointer;line-height:1.35}
+.panel label input{accent-color:var(--accent);width:16px;height:16px;flex:none}
+.panel label .sw{width:16px;height:16px;border-radius:5px;flex:none;border:1.5px solid}
+.legrow{display:flex;align-items:center;gap:9px;padding:4px 2px;line-height:1.35}
+.legrow .line{width:30px;height:0;border-top:3px solid;flex:none;border-radius:2px}
+.legrow svg{flex:none}
+.panel .mini{color:var(--muted);font-size:.78rem;margin:8px 0 0}
+.panelbtns{display:flex;gap:6px;margin-top:10px}
+.panelbtns button{flex:1;border:1px solid var(--line2);background:transparent;color:var(--muted);border-radius:8px;padding:6px;font:inherit;font-size:.78rem;cursor:pointer}
+.panelbtns button:hover{color:var(--ink)}
+.hint{color:var(--muted);font-size:.86rem;margin:0 0 40px}
+@media (max-width:560px){.panel .phead{padding:9px 10px}.panel .phead b{font-size:.82rem}}
+/* ---------- svg map ---------- */
+#pathmap{font-family:"IBM Plex Sans",system-ui,sans-serif}
+#pathmap .pr{stroke-width:1.6}
+#pathmap .pt{font-size:15px;font-weight:600}
+#pathmap .ln{stroke-width:2.3;stroke-linecap:round;fill:none}
+#pathmap .sc{stroke:var(--st-mute);stroke-width:1.2}
+#pathmap .cf{font-size:12.5px;fill:var(--muted)}
+#pathmap .en{font-size:13.5px;font-weight:600;fill:var(--ink)}
+#pathmap .act{font-size:12.5px;fill:var(--act)}
+#pathmap .inh{font-size:12.5px;fill:var(--inh)}
+#pathmap .nt{font-size:12px;fill:var(--muted);font-style:italic}
+#pathmap .sym rect{fill:none;stroke:var(--st-irr);stroke-width:1.6}
+#pathmap .sym path{stroke:var(--st-irr);stroke-width:1.6}
+#pathmap .star{fill:var(--st-rl)}
+#pathmap .mito{fill:none;stroke:var(--line2);stroke-width:1.6;stroke-dasharray:8 7}
+#pathmap .memb{fill:var(--accent-soft);stroke:var(--line2);stroke-width:1.4;stroke-dasharray:6 5}
+#pathmap .cmp{font-size:13px;fill:var(--muted);font-style:italic}
+#pathmap .carrier{stroke-dasharray:5 4}
+#pathmap .st-irr{stroke:var(--st-irr)}
+#pathmap .st-rl{stroke:var(--st-rl)}
+#pathmap .st-con{stroke:var(--st-con)}
+#pathmap .cy-gly .pr,#pathmap .pr.cy-gly{fill:var(--bg-gly);stroke:var(--c-gly)}
+#pathmap .cy-gly .pt,#pathmap .pt.cy-gly{fill:var(--c-gly)}
+#pathmap .st-norm.cy-gly{stroke:var(--c-gly)}
+#pathmap .cy-gng .pr,#pathmap .pr.cy-gng{fill:var(--bg-gng);stroke:var(--c-gng)}
+#pathmap .cy-gng .pt,#pathmap .pt.cy-gng{fill:var(--c-gng)}
+#pathmap .st-norm.cy-gng{stroke:var(--c-gng)}
+#pathmap .cy-tca .pr,#pathmap .pr.cy-tca{fill:var(--bg-tca);stroke:var(--c-tca)}
+#pathmap .cy-tca .pt,#pathmap .pt.cy-tca{fill:var(--c-tca)}
+#pathmap .st-norm.cy-tca{stroke:var(--c-tca)}
+#pathmap .cy-pdh .pr,#pathmap .pr.cy-pdh{fill:var(--bg-pdh);stroke:var(--c-pdh)}
+#pathmap .cy-pdh .pt,#pathmap .pt.cy-pdh{fill:var(--c-pdh)}
+#pathmap .st-norm.cy-pdh{stroke:var(--c-pdh)}
+#pathmap .cy-lactate .pr,#pathmap .pr.cy-lactate{fill:var(--bg-lactate);stroke:var(--c-lactate)}
+#pathmap .cy-lactate .pt,#pathmap .pt.cy-lactate{fill:var(--c-lactate)}
+#pathmap .st-norm.cy-lactate{stroke:var(--c-lactate)}
+#pathmap .cy-ethanol .pr,#pathmap .pr.cy-ethanol{fill:var(--bg-ethanol);stroke:var(--c-ethanol)}
+#pathmap .cy-ethanol .pt,#pathmap .pt.cy-ethanol{fill:var(--c-ethanol)}
+#pathmap .st-norm.cy-ethanol{stroke:var(--c-ethanol)}
+#pathmap .cy-bpg .pr,#pathmap .pr.cy-bpg{fill:var(--bg-bpg);stroke:var(--c-bpg)}
+#pathmap .cy-bpg .pt,#pathmap .pt.cy-bpg{fill:var(--c-bpg)}
+#pathmap .st-norm.cy-bpg{stroke:var(--c-bpg)}
+#pathmap .cy-shuttle .pr,#pathmap .pr.cy-shuttle{fill:var(--bg-shuttle);stroke:var(--c-shuttle)}
+#pathmap .cy-shuttle .pt,#pathmap .pt.cy-shuttle{fill:var(--c-shuttle)}
+#pathmap .st-norm.cy-shuttle{stroke:var(--c-shuttle)}
+#pathmap .cy-link .pr,#pathmap .pr.cy-link{fill:var(--bg-shared);stroke:var(--st-con)}
+#pathmap .cy-link .pt,#pathmap .pt.cy-link{fill:var(--st-con)}
+#pathmap .st-norm.cy-link{stroke:var(--st-con)}
+#pathmap .cy-shared .pr,#pathmap .pr.cy-shared{fill:var(--bg-shared);stroke:var(--c-shared)}
+#pathmap .cy-shared .pt,#pathmap .pt.cy-shared{fill:var(--c-shared)}
+#pathmap .st-norm.cy-shared{stroke:var(--c-shared)}
+.hide-cy-gly .cy-gly{display:none}
+.hide-cy-gng .cy-gng{display:none}
+.hide-cy-tca .cy-tca{display:none}
+.hide-cy-pdh .cy-pdh{display:none}
+.hide-cy-lactate .cy-lactate{display:none}
+.hide-cy-ethanol .cy-ethanol{display:none}
+.hide-cy-bpg .cy-bpg{display:none}
+.hide-cy-shuttle .cy-shuttle{display:none}
+.hide-cy-link .cy-link{display:none}
+.hide-cy-shared .cy-shared{display:none}
+.hide-lay-enzyme .lay-enzyme{display:none}
+.hide-lay-cofactor .lay-cofactor{display:none}
+.hide-lay-activator .lay-activator{display:none}
+.hide-lay-inhibitor .lay-inhibitor{display:none}
+.hide-lay-note .lay-note{display:none}
+.hide-lay-compartment .lay-compartment{display:none}
+/* ---------- clinical / posts ---------- */
+.postlist{display:grid;gap:14px;padding-bottom:56px}
+.postitem{display:flex;gap:16px;align-items:baseline;background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:20px 22px;text-decoration:none;transition:.18s}
+.postitem:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.postitem h3{margin:0;font-size:1.12rem}
+.postitem .meta{margin-left:auto;color:var(--muted);font-size:.84rem;white-space:nowrap}
+.postitem p{color:var(--muted);margin:.35em 0 0;font-size:.93rem}
+.empty{border:1px dashed var(--line2);border-radius:16px;padding:40px;text-align:center;color:var(--muted)}
+article.post{max-width:76ch;padding-bottom:64px}
+article.post h2{margin-top:1.4em}
+article.post h3{margin-top:1.3em}
+article.post img{border-radius:12px;border:1px solid var(--line);margin:18px 0}
+article.post .att{margin:18px 0}
+article.post embed,article.post iframe{width:100%;height:min(75vh,760px);border:1px solid var(--line);border-radius:12px;background:#fff}
+.filelink{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--ink);font-size:.93rem}
+.dateline{color:var(--muted);font-size:.9rem;margin:-.4em 0 1.6em}
+/* ---------- forms / admin ---------- */
+.formcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:520px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+input[type=text],input[type=email],input[type=password],textarea,input[type=file]{
+  width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 13px}
+textarea{min-height:260px;resize:vertical;line-height:1.6;font-size:.96rem}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.msg{border-radius:10px;padding:10px 13px;font-size:.9rem;margin-bottom:12px}
+.msg.err{background:color-mix(in srgb,var(--inh) 12%,transparent);color:var(--inh)}
+.msg.ok{background:var(--accent-soft);color:var(--accent)}
+.adminwrap{display:grid;gap:26px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);padding-bottom:64px}
+@media (max-width:900px){.adminwrap{grid-template-columns:1fr}}
+.adminbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px}
+.adminrow{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.adminrow:last-child{border-bottom:0}
+.adminrow b{flex:1;font-weight:500;font-size:.95rem}
+.chiprow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--line2);border-radius:999px;padding:5px 11px;font-size:.82rem}
+.chip button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:.95rem;line-height:1}
+footer.site{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--muted);font-size:.88rem}
+footer.site .fl{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+footer.site a{color:var(--muted)}
+.view{display:none}
+.view.on{display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#/home"><span class="dot">Bx</span>NYCPM Unofficial Biochemistry</a>
+    <button class="iconbtn menutoggle" id="menutoggle" aria-label="Menu">&#9776;</button>
+    <nav class="main" id="nav">
+      <a href="#/home" data-route="home">Home</a>
+      <a href="#/cycles" data-route="cycles">Biochemistry cycles</a>
+      <a href="#/clinical" data-route="clinical">Clinical explanations</a>
+      <a href="#/admin" data-route="admin" id="navadmin" hidden>Admin</a>
+      <a href="#/login" data-route="login" id="navlogin">Sign in</a>
+      <button class="iconbtn" id="themebtn" aria-label="Toggle dark mode" style="margin-left:6px">&#9789;</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section class="view" id="view-home">
+  <div class="wrap hero">
+    <div class="eyebrow">Student-built study reference</div>
+    <h1>Biochemistry you can actually see.</h1>
+    <p class="lede">Interactive metabolic maps and plain-language clinical write-ups, built from NYCPM lecture material. Pan, zoom, and switch pathways on and off until the picture makes sense.</p>
+    <div class="cta">
+      <a class="btn primary" href="#/cycles">Open the pathway map</a>
+      <a class="btn ghost" href="#/clinical">Read clinical explanations</a>
+    </div>
+  </div>
+  <div class="wrap cards">
+    <a class="card" href="#/cycles">
+      <div class="swatchrow"><i style="background:var(--c-gng)"></i><i style="background:var(--c-gly)"></i><i style="background:var(--c-tca)"></i><i style="background:var(--st-con)"></i></div>
+      <h3>Biochemistry cycles</h3>
+      <p>Gluconeogenesis, glycolysis, PDH, the Krebs cycle, lactate and ethanol fermentation, the 2,3-BPG shunt and the malate&ndash;aspartate shuttle on one map &mdash; with every enzyme, cofactor, activator and inhibitor labelled.</p>
+    </a>
+    <a class="card" href="#/clinical">
+      <div class="swatchrow"><i style="background:var(--c-lactate)"></i><i style="background:var(--c-bpg)"></i><i style="background:var(--c-shuttle)"></i></div>
+      <h3>Clinical explanations</h3>
+      <p>Short write-ups connecting the pathways to disease: enzyme deficiencies, poisonings, lab findings and the questions that show up on exams.</p>
+    </a>
+    <div class="card" style="cursor:default">
+      <div class="swatchrow"><i style="background:var(--st-rl)"></i><i style="background:var(--st-irr)"></i><i style="background:var(--st-con)"></i></div>
+      <h3>One consistent visual language</h3>
+      <p>A boxed &times; marks an irreversible step, a star marks a rate-limiting step, and every new pathway added to the map follows the same colour and symbol rules.</p>
+    </div>
+  </div>
+  <div class="wrap"><p class="notice">This is an unofficial student project. It is not produced, reviewed or endorsed by the New York College of Podiatric Medicine. Always check your own lecture material before an exam.</p></div>
+</section>
+
+<!-- CYCLES -->
+<section class="view" id="view-cycles">
+  <div class="wrap pagehead">
+    <h2>Carbohydrate metabolism map</h2>
+    <p>Gluconeogenesis runs up the left, glycolysis runs down the right, and they meet at glucose and pyruvate. Pyruvate carboxylase is drawn once: a single oxaloacetate branch point that feeds both the Krebs cycle and gluconeogenesis. Quantities are per glucose (&times;2 below the aldolase split).</p>
+  </div>
+  <div class="wrap">
+    <div class="viewer" id="viewer">
+      <div class="stage" id="stage"><svg id="pathmap" viewBox="0 0 1560 3100" role="img" aria-labelledby="mapt mapd"><title id="mapt">Glycolysis, gluconeogenesis, the Krebs cycle and connected pathways</title><desc id="mapd">Gluconeogenesis runs up the left, glycolysis down the right, meeting at glucose and pyruvate. Pyruvate carboxylase makes one oxaloacetate branch point feeding both the Krebs cycle and gluconeogenesis. Lactate, ethanol, the 2,3-BPG shunt and the malate-aspartate shuttle branch off. Enzymes, cofactors, activators, inhibitors, irreversible steps and rate-limiting steps are labelled.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1.5 1L8.5 5L1.5 9" fill="none" stroke="context-stroke" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="arrowmute" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1.5 1L8.5 5L1.5 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect class="mito lay-compartment" x="240" y="1630" width="1130" height="750" rx="22"/><text class="cmp lay-compartment" x="1120" y="1656" dominant-baseline="central">Mitochondrial matrix</text><text class="cmp lay-compartment" x="60" y="1380" dominant-baseline="central">Cytosol</text><g class="pill cy-shared lay-core"><rect class="pr" x="647.5" y="43.0" width="95.1" height="34" rx="17"/><text class="pt" x="695" y="60" text-anchor="middle" dominant-baseline="central">Glucose</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="313.9" y="173.0" width="132.3" height="34" rx="17"/><text class="pt" x="380" y="190" text-anchor="middle" dominant-baseline="central">Glucose-6-P</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="943.9" y="173.0" width="132.3" height="34" rx="17"/><text class="pt" x="1010" y="190" text-anchor="middle" dominant-baseline="central">Glucose-6-P</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="309.2" y="303.0" width="141.6" height="34" rx="17"/><text class="pt" x="380" y="320" text-anchor="middle" dominant-baseline="central">Fructose-6-P</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="939.2" y="303.0" width="141.6" height="34" rx="17"/><text class="pt" x="1010" y="320" text-anchor="middle" dominant-baseline="central">Fructose-6-P</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="295.2" y="433.0" width="169.5" height="34" rx="17"/><text class="pt" x="380" y="450" text-anchor="middle" dominant-baseline="central">Fructose-1,6-BP</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="925.2" y="433.0" width="169.5" height="34" rx="17"/><text class="pt" x="1010" y="450" text-anchor="middle" dominant-baseline="central">Fructose-1,6-BP</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="281.3" y="573.0" width="197.4" height="34" rx="17"/><text class="pt" x="380" y="590" text-anchor="middle" dominant-baseline="central">Glyceraldehyde-3-P</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="911.3" y="573.0" width="197.4" height="34" rx="17"/><text class="pt" x="1010" y="590" text-anchor="middle" dominant-baseline="central">Glyceraldehyde-3-P</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="258.1" y="713.0" width="243.9" height="34" rx="17"/><text class="pt" x="380" y="730" text-anchor="middle" dominant-baseline="central">1,3-Bisphosphoglycerate</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="888.0" y="713.0" width="243.9" height="34" rx="17"/><text class="pt" x="1010" y="730" text-anchor="middle" dominant-baseline="central">1,3-Bisphosphoglycerate</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="281.3" y="843.0" width="197.4" height="34" rx="17"/><text class="pt" x="380" y="860" text-anchor="middle" dominant-baseline="central">3-Phosphoglycerate</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="911.3" y="843.0" width="197.4" height="34" rx="17"/><text class="pt" x="1010" y="860" text-anchor="middle" dominant-baseline="central">3-Phosphoglycerate</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="281.3" y="973.0" width="197.4" height="34" rx="17"/><text class="pt" x="380" y="990" text-anchor="middle" dominant-baseline="central">2-Phosphoglycerate</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="911.3" y="973.0" width="197.4" height="34" rx="17"/><text class="pt" x="1010" y="990" text-anchor="middle" dominant-baseline="central">2-Phosphoglycerate</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="276.6" y="1103.0" width="206.7" height="34" rx="17"/><text class="pt" x="380" y="1120" text-anchor="middle" dominant-baseline="central">Phosphoenolpyruvate</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="906.6" y="1103.0" width="206.7" height="34" rx="17"/><text class="pt" x="1010" y="1120" text-anchor="middle" dominant-baseline="central">Phosphoenolpyruvate</text></g><g class="pill cy-gng lay-core"><rect class="pr" x="146.4" y="573.0" width="67.2" height="34" rx="17"/><text class="pt" x="180" y="590" text-anchor="middle" dominant-baseline="central">DHAP</text></g><g class="pill cy-gly lay-core"><rect class="pr" x="756.4" y="573.0" width="67.2" height="34" rx="17"/><text class="pt" x="790" y="590" text-anchor="middle" dominant-baseline="central">DHAP</text></g><g class="pill cy-bpg lay-core"><rect class="pr" x="1352.5" y="783.0" width="95.1" height="34" rx="17"/><text class="pt" x="1400" y="800" text-anchor="middle" dominant-baseline="central">2,3-BPG</text></g><g class="pill cy-shared lay-core"><rect class="pr" x="642.8" y="1293.0" width="104.4" height="34" rx="17"/><text class="pt" x="695" y="1310" text-anchor="middle" dominant-baseline="central">Pyruvate</text></g><g class="pill cy-lactate lay-core"><rect class="pr" x="1102.5" y="1483.0" width="95.1" height="34" rx="17"/><text class="pt" x="1150" y="1500" text-anchor="middle" dominant-baseline="central">Lactate</text></g><g class="pill cy-ethanol lay-core"><rect class="pr" x="1299.2" y="1293.0" width="141.6" height="34" rx="17"/><text class="pt" x="1370" y="1310" text-anchor="middle" dominant-baseline="central">Acetaldehyde</text></g><g class="pill cy-ethanol lay-core"><rect class="pr" x="1322.5" y="1433.0" width="95.1" height="34" rx="17"/><text class="pt" x="1370" y="1450" text-anchor="middle" dominant-baseline="central">Ethanol</text></g><g class="pill cy-pdh lay-core"><rect class="pr" x="633.5" y="1653.0" width="123.0" height="34" rx="17"/><text class="pt" x="695" y="1670" text-anchor="middle" dominant-baseline="central">Acetyl-CoA</text></g><path class="ln cy-gly st-irr lay-core" d="M752 78 L980 170" fill="none" marker-end="url(#arrow)"/><text class="cf cy-gly lay-cofactor" x="770" y="116" text-anchor="start" dominant-baseline="central">ATP → ADP</text><g class="sym cy-gly lay-enzyme"><rect x="752" y="231" width="14" height="14" rx="2"/><path d="M755.5 234.5L762.5 241.5M762.5 234.5L755.5 241.5"/></g><text class="en cy-gly lay-enzyme" x="772" y="238" dominant-baseline="central">Hexokinase / glucokinase</text><text class="inh cy-gly lay-inhibitor" x="752" y="256" text-anchor="start" dominant-baseline="central">− G6P (hexokinase only)</text><text class="nt cy-gly lay-note" x="752" y="273" text-anchor="start" dominant-baseline="central">glucokinase: liver and β-cell, high Kₘ, induced by insulin</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="212.0" x2="1010.0" y2="297.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gly lay-enzyme" x="1030" y="245.5" dominant-baseline="central">Phosphoglucose isomerase</text><line class="ln cy-gly st-rl lay-core" x1="1010.0" y1="342.0" x2="1010.0" y2="427.0" marker-end="url(#arrow)"/><path class="sc cy-gly lay-cofactor" d="M990 366.5 Q1010 366.5 1010 384.5 Q1010 402.5 990 402.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gly lay-cofactor" x="984" y="366.5" text-anchor="end" dominant-baseline="central">ATP</text><text class="cf cy-gly lay-cofactor" x="984" y="402.5" text-anchor="end" dominant-baseline="central">ADP</text><g class="sym cy-gly lay-enzyme"><rect x="1030" y="357.5" width="14" height="14" rx="2"/><path d="M1033.5 361.0L1040.5 368.0M1040.5 361.0L1033.5 368.0"/></g><polygon class="star cy-gly lay-enzyme" points="1057.0,356.0 1059.1,361.6 1065.1,361.9 1060.4,365.6 1062.0,371.4 1057.0,368.1 1052.0,371.4 1053.6,365.6 1048.9,361.9 1054.9,361.6"/><text class="en cy-gly lay-enzyme" x="1071" y="364.5" dominant-baseline="central">PFK-1</text><text class="act cy-gly lay-activator" x="1030" y="382.5" text-anchor="start" dominant-baseline="central">+ AMP, fructose-2,6-BP</text><text class="inh cy-gly lay-inhibitor" x="1030" y="399.5" text-anchor="start" dominant-baseline="central">− ATP, citrate, H⁺</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="472.0" x2="1010.0" y2="567.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gly lay-enzyme" x="1030" y="510.5" dominant-baseline="central">Aldolase</text><path class="ln cy-gly st-norm lay-core" d="M955 470 L806 572" fill="none" marker-end="url(#arrow)" marker-start="url(#arrow)"/><line class="ln cy-gly st-norm lay-core" x1="826.0" y1="590.0" x2="906.0" y2="590.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="cf cy-gly lay-enzyme" x="866" y="616" text-anchor="middle" dominant-baseline="central">Triose-P isomerase</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="612.0" x2="1010.0" y2="707.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gly lay-cofactor" d="M990 641.5 Q1010 641.5 1010 659.5 Q1010 677.5 990 677.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gly lay-cofactor" x="984" y="641.5" text-anchor="end" dominant-baseline="central">2 NAD⁺ + 2 Pᵢ</text><text class="cf cy-gly lay-cofactor" x="984" y="677.5" text-anchor="end" dominant-baseline="central">2 NADH + 2 H⁺</text><text class="en cy-gly lay-enzyme" x="1030" y="650.5" dominant-baseline="central">G3P dehydrogenase</text><text class="inh cy-gly lay-inhibitor" x="1030" y="668.5" text-anchor="start" dominant-baseline="central">− arsenate (no ATP made at PGK)</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="752.0" x2="1010.0" y2="837.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gly lay-cofactor" d="M990 776.5 Q1010 776.5 1010 794.5 Q1010 812.5 990 812.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gly lay-cofactor" x="984" y="776.5" text-anchor="end" dominant-baseline="central">2 ADP</text><text class="cf cy-gly lay-cofactor" x="984" y="812.5" text-anchor="end" dominant-baseline="central">2 ATP</text><text class="en cy-gly lay-enzyme" x="1030" y="785.5" dominant-baseline="central">Phosphoglycerate kinase</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="882.0" x2="1010.0" y2="967.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gly lay-enzyme" x="1030" y="915.5" dominant-baseline="central">Phosphoglycerate mutase</text><line class="ln cy-gly st-norm lay-core" x1="1010.0" y1="1012.0" x2="1010.0" y2="1097.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gly lay-cofactor" d="M1010 1054.5 Q1010 1072.5 990 1072.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gly lay-cofactor" x="984" y="1072.5" text-anchor="end" dominant-baseline="central">2 H₂O</text><text class="en cy-gly lay-enzyme" x="1030" y="1045.5" dominant-baseline="central">Enolase</text><path class="ln cy-gly st-irr lay-core" d="M985 1141 L768 1289" fill="none" marker-end="url(#arrow)"/><g class="sym cy-gly lay-enzyme"><rect x="1000" y="1163" width="14" height="14" rx="2"/><path d="M1003.5 1166.5L1010.5 1173.5M1010.5 1166.5L1003.5 1173.5"/></g><text class="en cy-gly lay-enzyme" x="1020" y="1170" dominant-baseline="central">Pyruvate kinase</text><text class="act cy-gly lay-activator" x="1000" y="1188" text-anchor="start" dominant-baseline="central">+ fructose-1,6-BP (feed-forward)</text><text class="inh cy-gly lay-inhibitor" x="1000" y="1205" text-anchor="start" dominant-baseline="central">− ATP, alanine; glucagon → PKA phosphorylation (liver)</text><text class="cf cy-gly lay-cofactor" x="820" y="1252" text-anchor="start" dominant-baseline="central">2 ADP → 2 ATP</text><path class="ln cy-bpg st-norm lay-core" d="M1136 733 L1352 782" fill="none" marker-end="url(#arrow)"/><path class="ln cy-bpg st-norm lay-core" d="M1358 822 L1118 858" fill="none" marker-end="url(#arrow)"/><text class="en cy-bpg lay-enzyme" x="1215" y="700" dominant-baseline="central">Bisphosphoglycerate mutase</text><text class="nt cy-bpg lay-note" x="1215" y="718" text-anchor="start" dominant-baseline="central">RBC only — Rapoport–Luebering shunt</text><text class="en cy-bpg lay-enzyme" x="1185" y="890" dominant-baseline="central">2,3-BPG phosphatase (H₂O → Pᵢ)</text><text class="nt cy-bpg lay-note" x="1545" y="960" text-anchor="end" dominant-baseline="central">Binds the β-globin chains of deoxy-Hb</text><text class="nt cy-bpg lay-note" x="1545" y="978" text-anchor="end" dominant-baseline="central">stabilises the T (deoxy) state → ↓ O₂ affinity</text><text class="nt cy-bpg lay-note" x="1545" y="996" text-anchor="end" dominant-baseline="central">promotes O₂ unloading in the tissues</text><text class="nt cy-bpg lay-note" x="1545" y="1014" text-anchor="end" dominant-baseline="central">bypassing PGK costs the RBC that ATP</text><path class="ln cy-gng st-irr lay-core" d="M440 170 L642 78" fill="none" marker-end="url(#arrow)"/><text class="cf cy-gng lay-cofactor" x="452" y="116" text-anchor="start" dominant-baseline="central">H₂O → Pᵢ</text><g class="sym cy-gng lay-enzyme"><rect x="456" y="233" width="14" height="14" rx="2"/><path d="M459.5 236.5L466.5 243.5M466.5 236.5L459.5 243.5"/></g><text class="en cy-gng lay-enzyme" x="476" y="240" dominant-baseline="central">Glucose-6-phosphatase</text><text class="nt cy-gng lay-note" x="456" y="258" text-anchor="start" dominant-baseline="central">ER lumen of liver and kidney only</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="298.0" x2="380.0" y2="213.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gng lay-enzyme" x="360" y="246.5" text-anchor="end" dominant-baseline="central">Phosphoglucose isomerase</text><line class="ln cy-gng st-rl lay-core" x1="380.0" y1="428.0" x2="380.0" y2="343.0" marker-end="url(#arrow)"/><path class="sc cy-gng lay-cofactor" d="M360 403.5 Q380 403.5 380 385.5 Q380 367.5 360 367.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gng lay-cofactor" x="354" y="403.5" text-anchor="end" dominant-baseline="central">H₂O</text><text class="cf cy-gng lay-cofactor" x="354" y="367.5" text-anchor="end" dominant-baseline="central">Pᵢ</text><g class="sym cy-gng lay-enzyme"><rect x="400" y="358.5" width="14" height="14" rx="2"/><path d="M403.5 362.0L410.5 369.0M410.5 362.0L403.5 369.0"/></g><polygon class="star cy-gng lay-enzyme" points="427.0,357.0 429.1,362.6 435.1,362.9 430.4,366.6 432.0,372.4 427.0,369.1 422.0,372.4 423.6,366.6 418.9,362.9 424.9,362.6"/><text class="en cy-gng lay-enzyme" x="441" y="365.5" dominant-baseline="central">Fructose-1,6-bisphosphatase</text><text class="act cy-gng lay-activator" x="400" y="383.5" text-anchor="start" dominant-baseline="central">+ citrate</text><text class="inh cy-gng lay-inhibitor" x="400" y="400.5" text-anchor="start" dominant-baseline="central">− AMP, fructose-2,6-BP</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="568.0" x2="380.0" y2="473.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gng lay-enzyme" x="400" y="511.5" dominant-baseline="central">Aldolase</text><path class="ln cy-gng st-norm lay-core" d="M325 470 L196 572" fill="none" marker-end="url(#arrow)" marker-start="url(#arrow)"/><line class="ln cy-gng st-norm lay-core" x1="214.0" y1="590.0" x2="282.0" y2="590.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="cf cy-gng lay-enzyme" x="248" y="616" text-anchor="middle" dominant-baseline="central">Triose-P isomerase</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="708.0" x2="380.0" y2="613.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gng lay-cofactor" d="M360 678.5 Q380 678.5 380 660.5 Q380 642.5 360 642.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gng lay-cofactor" x="354" y="678.5" text-anchor="end" dominant-baseline="central">2 NADH + 2 H⁺</text><text class="cf cy-gng lay-cofactor" x="354" y="642.5" text-anchor="end" dominant-baseline="central">2 NAD⁺ + 2 Pᵢ</text><text class="en cy-gng lay-enzyme" x="400" y="651.5" dominant-baseline="central">G3P dehydrogenase</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="838.0" x2="380.0" y2="753.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gng lay-cofactor" d="M360 813.5 Q380 813.5 380 795.5 Q380 777.5 360 777.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-gng lay-cofactor" x="354" y="813.5" text-anchor="end" dominant-baseline="central">2 ATP</text><text class="cf cy-gng lay-cofactor" x="354" y="777.5" text-anchor="end" dominant-baseline="central">2 ADP</text><text class="en cy-gng lay-enzyme" x="400" y="786.5" dominant-baseline="central">Phosphoglycerate kinase</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="968.0" x2="380.0" y2="883.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-gng lay-enzyme" x="400" y="916.5" dominant-baseline="central">Phosphoglycerate mutase</text><line class="ln cy-gng st-norm lay-core" x1="380.0" y1="1098.0" x2="380.0" y2="1013.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-gng lay-cofactor" d="M360 1073.5 Q380 1073.5 380 1055.5" fill="none"/><text class="cf cy-gng lay-cofactor" x="354" y="1073.5" text-anchor="end" dominant-baseline="central">2 H₂O</text><text class="en cy-gng lay-enzyme" x="400" y="1046.5" dominant-baseline="central">Enolase</text><path class="ln cy-link st-con lay-core" d="M632 1310 L500 1310 L500 1747" fill="none" marker-end="url(#arrow)"/><path class="sc cy-link lay-cofactor" d="M520 1327 Q500 1327 500 1345 Q500 1363 520 1363" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-link lay-cofactor" x="526" y="1327" text-anchor="start" dominant-baseline="central">2 HCO₃⁻ + 2 ATP</text><text class="cf cy-link lay-cofactor" x="526" y="1363" text-anchor="start" dominant-baseline="central">2 ADP + 2 Pᵢ</text><text class="en cy-link lay-enzyme" x="478" y="1660" text-anchor="end" dominant-baseline="central">Pyruvate carboxylase</text><g class="sym cy-link lay-enzyme"><rect x="300.0" y="1653" width="14" height="14" rx="2"/><path d="M303.5 1656.5L310.5 1663.5M310.5 1656.5L303.5 1663.5"/></g><text class="act cy-link lay-activator" x="478" y="1678" text-anchor="end" dominant-baseline="central">+ acetyl-CoA (signals the cell needs OAA)</text><text class="nt cy-link lay-note" x="478" y="1695" text-anchor="end" dominant-baseline="central">mitochondrial matrix; anaplerotic + gluconeogenic</text><path class="ln cy-link st-con lay-core" d="M462 1753 L392 1145" fill="none" marker-end="url(#arrow)"/><path class="sc cy-link lay-cofactor" d="M403 1438 Q423 1438 423 1420 Q423 1402 403 1402" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-link lay-cofactor" x="397" y="1438" text-anchor="end" dominant-baseline="central">2 GTP</text><text class="cf cy-link lay-cofactor" x="397" y="1402" text-anchor="end" dominant-baseline="central">2 GDP + 2 CO₂</text><text class="en cy-link lay-enzyme" x="352" y="1300" text-anchor="end" dominant-baseline="central">PEP carboxykinase</text><g class="sym cy-link lay-enzyme"><rect x="197.7" y="1293" width="14" height="14" rx="2"/><path d="M201.2 1296.5L208.2 1303.5M208.2 1296.5L201.2 1303.5"/></g><text class="act cy-link lay-activator" x="352" y="1318" text-anchor="end" dominant-baseline="central">+ glucagon, cortisol (gene induction)</text><text class="nt cy-link lay-note" x="352" y="1335" text-anchor="end" dominant-baseline="central">cytosolic; OAA leaves the matrix as malate</text><line class="ln cy-pdh st-irr lay-core" x1="695.0" y1="1332.0" x2="695.0" y2="1647.0" marker-end="url(#arrow)"/><path class="sc cy-pdh lay-cofactor" d="M675 1471.5 Q695 1471.5 695 1489.5 Q695 1507.5 675 1507.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-pdh lay-cofactor" x="669" y="1471.5" text-anchor="end" dominant-baseline="central">2 CoA-SH + 2 NAD⁺</text><text class="cf cy-pdh lay-cofactor" x="669" y="1507.5" text-anchor="end" dominant-baseline="central">2 CO₂ + 2 NADH + 2 H⁺</text><g class="sym cy-pdh lay-enzyme"><rect x="715" y="1455.5" width="14" height="14" rx="2"/><path d="M718.5 1459.0L725.5 1466.0M725.5 1459.0L718.5 1466.0"/></g><text class="en cy-pdh lay-enzyme" x="735" y="1462.5" dominant-baseline="central">Pyruvate dehydrogenase complex</text><text class="act cy-pdh lay-activator" x="715" y="1480.5" text-anchor="start" dominant-baseline="central">+ pyruvate, Ca²⁺, ADP, NAD⁺, CoA</text><text class="inh cy-pdh lay-inhibitor" x="715" y="1497.5" text-anchor="start" dominant-baseline="central">− ATP, acetyl-CoA, NADH (via PDH kinase); arsenite</text><text class="nt cy-pdh lay-note" x="715" y="1514.5" text-anchor="start" dominant-baseline="central">E1 TPP · E2 lipoate + CoA · E3 FAD, NAD⁺</text><path class="ln cy-lactate st-norm lay-core" d="M742 1334 L1090 1484" fill="none" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-lactate lay-cofactor" d="M920 1384 Q900 1384 900 1402 Q900 1420 920 1420" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-lactate lay-cofactor" x="926" y="1384" text-anchor="start" dominant-baseline="central">2 NADH + 2 H⁺</text><text class="cf cy-lactate lay-cofactor" x="926" y="1420" text-anchor="start" dominant-baseline="central">2 NAD⁺</text><text class="en cy-lactate lay-enzyme" x="760" y="1560" dominant-baseline="central">Lactate dehydrogenase</text><text class="nt cy-lactate lay-note" x="760" y="1578" text-anchor="start" dominant-baseline="central">anaerobic: regenerates NAD⁺ so glycolysis can continue</text><text class="nt cy-lactate lay-note" x="760" y="1596" text-anchor="start" dominant-baseline="central">Cori cycle: RBC and exercising muscle lactate → blood → liver → pyruvate → glucose (costs 6 ATP)</text><text class="nt cy-lactate lay-note" x="760" y="1614" text-anchor="start" dominant-baseline="central">Build-up causes lactic acidosis</text><line class="ln cy-ethanol st-irr lay-core" x1="752.0" y1="1310.0" x2="1292.0" y2="1310.0" marker-end="url(#arrow)"/><path class="sc cy-ethanol lay-cofactor" d="M1140 1292 Q1120 1292 1120 1310 Q1120 1328 1140 1328" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-ethanol lay-cofactor" x="1146" y="1292" text-anchor="start" dominant-baseline="central">TPP</text><text class="cf cy-ethanol lay-cofactor" x="1146" y="1328" text-anchor="start" dominant-baseline="central">2 CO₂</text><g class="sym cy-ethanol lay-enzyme"><rect x="1000" y="1255" width="14" height="14" rx="2"/><path d="M1003.5 1258.5L1010.5 1265.5M1010.5 1258.5L1003.5 1265.5"/></g><text class="en cy-ethanol lay-enzyme" x="1020" y="1262" dominant-baseline="central">Pyruvate decarboxylase</text><text class="nt cy-ethanol lay-note" x="1000" y="1280" text-anchor="start" dominant-baseline="central">yeast and some microbes — not human</text><line class="ln cy-ethanol st-norm lay-core" x1="1370.0" y1="1332.0" x2="1370.0" y2="1427.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-ethanol lay-cofactor" d="M1390 1361.5 Q1370 1361.5 1370 1379.5 Q1370 1397.5 1390 1397.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-ethanol lay-cofactor" x="1396" y="1361.5" text-anchor="start" dominant-baseline="central">2 NADH + 2 H⁺</text><text class="cf cy-ethanol lay-cofactor" x="1396" y="1397.5" text-anchor="start" dominant-baseline="central">2 NAD⁺</text><text class="en cy-ethanol lay-enzyme" x="1350" y="1370.5" text-anchor="end" dominant-baseline="central">Alcohol dehydrogenase</text><g class="pill cy-tca lay-core"><rect class="pr" x="429.2" y="1753.0" width="141.6" height="34" rx="17"/><text class="pt" x="500" y="1770" text-anchor="middle" dominant-baseline="central">Oxaloacetate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="457.1" y="1923.0" width="85.8" height="34" rx="17"/><text class="pt" x="500" y="1940" text-anchor="middle" dominant-baseline="central">Malate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="447.8" y="2093.0" width="104.4" height="34" rx="17"/><text class="pt" x="500" y="2110" text-anchor="middle" dominant-baseline="central">Fumarate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="443.1" y="2253.0" width="113.7" height="34" rx="17"/><text class="pt" x="500" y="2270" text-anchor="middle" dominant-baseline="central">Succinate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="1012.5" y="1753.0" width="95.1" height="34" rx="17"/><text class="pt" x="1060" y="1770" text-anchor="middle" dominant-baseline="central">Citrate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="998.5" y="1923.0" width="123.0" height="34" rx="17"/><text class="pt" x="1060" y="1940" text-anchor="middle" dominant-baseline="central">Isocitrate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="975.2" y="2093.0" width="169.5" height="34" rx="17"/><text class="pt" x="1060" y="2110" text-anchor="middle" dominant-baseline="central">α-Ketoglutarate</text></g><g class="pill cy-tca lay-core"><rect class="pr" x="989.2" y="2253.0" width="141.6" height="34" rx="17"/><text class="pt" x="1060" y="2270" text-anchor="middle" dominant-baseline="central">Succinyl-CoA</text></g><line class="ln cy-tca st-irr lay-core" x1="576.8" y1="1770.0" x2="1004.5" y2="1770.0" marker-end="url(#arrow)"/><path class="ln cy-pdh st-norm lay-core" d="M695 1688 Q695 1770 745 1770" fill="none" marker-end="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M800 1794 Q832 1794 842 1770 Q852 1794 884 1794" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="794" y="1796" text-anchor="end" dominant-baseline="central">2 H₂O</text><text class="cf cy-tca lay-cofactor" x="890" y="1796" text-anchor="start" dominant-baseline="central">2 CoA-SH</text><g class="sym cy-tca lay-enzyme"><rect x="920" y="1717" width="14" height="14" rx="2"/><path d="M923.5 1720.5L930.5 1727.5M930.5 1720.5L923.5 1727.5"/></g><text class="en cy-tca lay-enzyme" x="940" y="1724" dominant-baseline="central">Citrate synthase</text><text class="inh cy-tca lay-inhibitor" x="920" y="1742" text-anchor="start" dominant-baseline="central">− citrate (product), ATP, NADH, succinyl-CoA</text><text class="nt cy-link lay-note" x="760" y="1818" text-anchor="start" dominant-baseline="central">One carboxylation step, two fates: OAA condenses with acetyl-CoA (Krebs) or is drawn off to PEP (gluconeogenesis)</text><line class="ln cy-tca st-norm lay-core" x1="1060.0" y1="1792.0" x2="1060.0" y2="1917.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><text class="en cy-tca lay-enzyme" x="1080" y="1845.5" dominant-baseline="central">Aconitase</text><text class="nt cy-tca lay-note" x="1080" y="1863.5" text-anchor="start" dominant-baseline="central">Fe–S protein; via cis-aconitate (−H₂O, +H₂O)</text><line class="ln cy-tca st-rl lay-core" x1="1060.0" y1="1962.0" x2="1060.0" y2="2087.0" marker-end="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M1040 2006.5 Q1060 2006.5 1060 2024.5 Q1060 2042.5 1040 2042.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="1034" y="2006.5" text-anchor="end" dominant-baseline="central">2 NAD⁺</text><text class="cf cy-tca lay-cofactor" x="1034" y="2042.5" text-anchor="end" dominant-baseline="central">2 NADH + 2 H⁺ + 2 CO₂</text><g class="sym cy-tca lay-enzyme"><rect x="1080" y="1997.5" width="14" height="14" rx="2"/><path d="M1083.5 2001.0L1090.5 2008.0M1090.5 2001.0L1083.5 2008.0"/></g><polygon class="star cy-tca lay-enzyme" points="1107.0,1996.0 1109.1,2001.6 1115.1,2001.9 1110.4,2005.6 1112.0,2011.4 1107.0,2008.1 1102.0,2011.4 1103.6,2005.6 1098.9,2001.9 1104.9,2001.6"/><text class="en cy-tca lay-enzyme" x="1121" y="2004.5" dominant-baseline="central">Isocitrate dehydrogenase</text><text class="act cy-tca lay-activator" x="1080" y="2022.5" text-anchor="start" dominant-baseline="central">+ ADP, Ca²⁺</text><text class="inh cy-tca lay-inhibitor" x="1080" y="2039.5" text-anchor="start" dominant-baseline="central">− ATP, NADH</text><line class="ln cy-tca st-irr lay-core" x1="1060.0" y1="2132.0" x2="1060.0" y2="2247.0" marker-end="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M1040 2171.5 Q1060 2171.5 1060 2189.5 Q1060 2207.5 1040 2207.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="1034" y="2171.5" text-anchor="end" dominant-baseline="central">2 CoA-SH + 2 NAD⁺</text><text class="cf cy-tca lay-cofactor" x="1034" y="2207.5" text-anchor="end" dominant-baseline="central">2 NADH + 2 H⁺ + 2 CO₂</text><g class="sym cy-tca lay-enzyme"><rect x="1080" y="2162.5" width="14" height="14" rx="2"/><path d="M1083.5 2166.0L1090.5 2173.0M1090.5 2166.0L1083.5 2173.0"/></g><text class="en cy-tca lay-enzyme" x="1100" y="2169.5" dominant-baseline="central">α-Ketoglutarate dehydrogenase</text><text class="act cy-tca lay-activator" x="1080" y="2187.5" text-anchor="start" dominant-baseline="central">+ Ca²⁺</text><text class="inh cy-tca lay-inhibitor" x="1080" y="2204.5" text-anchor="start" dominant-baseline="central">− NADH, succinyl-CoA; arsenite (lipoic acid)</text><line class="ln cy-tca st-norm lay-core" x1="981.2" y1="2270.0" x2="562.9" y2="2270.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M828 2246 Q798 2246 790 2270 Q782 2246 752 2246" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="834" y="2244" text-anchor="start" dominant-baseline="central">2 GDP + 2 Pᵢ</text><text class="cf cy-tca lay-cofactor" x="746" y="2244" text-anchor="end" dominant-baseline="central">2 GTP + 2 CoA-SH</text><text class="en cy-tca lay-enzyme" x="660" y="2300" dominant-baseline="central">Succinyl-CoA synthetase (succinate thiokinase)</text><text class="nt cy-tca lay-note" x="660" y="2318" text-anchor="start" dominant-baseline="central">substrate-level phosphorylation; GTP + ADP ⇌ GDP + ATP</text><line class="ln cy-tca st-norm lay-core" x1="500.0" y1="2248.0" x2="500.0" y2="2133.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M480 2208.5 Q500 2208.5 500 2190.5 Q500 2172.5 480 2172.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="474" y="2208.5" text-anchor="end" dominant-baseline="central">2 FAD</text><text class="cf cy-tca lay-cofactor" x="474" y="2172.5" text-anchor="end" dominant-baseline="central">2 FADH₂</text><text class="en cy-tca lay-enzyme" x="520" y="2170.5" dominant-baseline="central">Succinate dehydrogenase</text><text class="inh cy-tca lay-inhibitor" x="520" y="2188.5" text-anchor="start" dominant-baseline="central">− malonate (competitive)</text><text class="nt cy-tca lay-note" x="520" y="2205.5" text-anchor="start" dominant-baseline="central">Complex II — the only TCA enzyme in the inner membrane</text><line class="ln cy-tca st-norm lay-core" x1="500.0" y1="2088.0" x2="500.0" y2="1963.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M480 2043.5 Q500 2043.5 500 2025.5" fill="none"/><text class="cf cy-tca lay-cofactor" x="474" y="2043.5" text-anchor="end" dominant-baseline="central">2 H₂O</text><text class="en cy-tca lay-enzyme" x="520" y="2016.5" dominant-baseline="central">Fumarase</text><line class="ln cy-tca st-norm lay-core" x1="500.0" y1="1918.0" x2="500.0" y2="1793.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-tca lay-cofactor" d="M480 1873.5 Q500 1873.5 500 1855.5 Q500 1837.5 480 1837.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-tca lay-cofactor" x="474" y="1873.5" text-anchor="end" dominant-baseline="central">2 NAD⁺</text><text class="cf cy-tca lay-cofactor" x="474" y="1837.5" text-anchor="end" dominant-baseline="central">2 NADH + 2 H⁺</text><text class="en cy-tca lay-enzyme" x="520" y="1846.5" dominant-baseline="central">Malate dehydrogenase</text><text class="nt cy-tca lay-note" x="1078" y="2346" text-anchor="start" dominant-baseline="central">Per turn: 3 NADH, 1 FADH₂, 1 GTP → 12 ATP per acetyl-CoA</text><rect class="memb lay-compartment" x="700" y="2436" width="50" height="500" rx="10"/><text class="cmp lay-compartment" x="262" y="2456" dominant-baseline="central">Mitochondrial matrix</text><text class="cmp lay-compartment" x="1180" y="2456" dominant-baseline="central">Intermembrane space / cytosol</text><text class="cmp lay-compartment" x="640" y="2412" dominant-baseline="central">Inner mitochondrial membrane</text><g class="pill cy-shuttle lay-core"><rect class="pr" x="357.1" y="2503.0" width="85.8" height="34" rx="17"/><text class="pt" x="400" y="2520" text-anchor="middle" dominant-baseline="central">Malate</text></g><g class="pill cy-shuttle lay-core"><rect class="pr" x="329.2" y="2693.0" width="141.6" height="34" rx="17"/><text class="pt" x="400" y="2710" text-anchor="middle" dominant-baseline="central">Oxaloacetate</text></g><g class="pill cy-shuttle lay-core"><rect class="pr" x="343.1" y="2873.0" width="113.7" height="34" rx="17"/><text class="pt" x="400" y="2890" text-anchor="middle" dominant-baseline="central">Aspartate</text></g><g class="pill cy-shuttle lay-core"><rect class="pr" x="1007.1" y="2503.0" width="85.8" height="34" rx="17"/><text class="pt" x="1050" y="2520" text-anchor="middle" dominant-baseline="central">Malate</text></g><g class="pill cy-shuttle lay-core"><rect class="pr" x="979.2" y="2693.0" width="141.6" height="34" rx="17"/><text class="pt" x="1050" y="2710" text-anchor="middle" dominant-baseline="central">Oxaloacetate</text></g><g class="pill cy-shuttle lay-core"><rect class="pr" x="993.1" y="2873.0" width="113.7" height="34" rx="17"/><text class="pt" x="1050" y="2890" text-anchor="middle" dominant-baseline="central">Aspartate</text></g><rect class="pr cy-shuttle lay-core carrier" x="618" y="2502" width="214" height="36" rx="18"/><text class="pt cy-shuttle lay-core" x="725" y="2520" text-anchor="middle" dominant-baseline="central">malate–α-KG carrier</text><rect class="pr cy-shuttle lay-core carrier" x="600" y="2872" width="250" height="36" rx="18"/><text class="pt cy-shuttle lay-core" x="725" y="2890" text-anchor="middle" dominant-baseline="central">glutamate–aspartate carrier</text><line class="ln cy-shuttle st-con lay-core" x1="1010.0" y1="2520.0" x2="840.0" y2="2520.0" marker-end="url(#arrow)"/><line class="ln cy-shuttle st-con lay-core" x1="610.0" y1="2520.0" x2="440.0" y2="2520.0" marker-end="url(#arrow)"/><line class="ln cy-shuttle st-con lay-core" x1="440.0" y1="2890.0" x2="596.0" y2="2890.0" marker-end="url(#arrow)"/><line class="ln cy-shuttle st-con lay-core" x1="854.0" y1="2890.0" x2="1010.0" y2="2890.0" marker-end="url(#arrow)"/><line class="ln cy-shuttle st-norm lay-core" x1="400.0" y1="2542.0" x2="400.0" y2="2687.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-shuttle lay-cofactor" d="M380 2596.5 Q400 2596.5 400 2614.5 Q400 2632.5 380 2632.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-shuttle lay-cofactor" x="374" y="2596.5" text-anchor="end" dominant-baseline="central">NAD⁺</text><text class="cf cy-shuttle lay-cofactor" x="374" y="2632.5" text-anchor="end" dominant-baseline="central">NADH + H⁺ → Complex I</text><text class="en cy-shuttle lay-enzyme" x="420" y="2605.5" dominant-baseline="central">Malate dehydrogenase</text><line class="ln cy-shuttle st-norm lay-core" x1="400.0" y1="2732.0" x2="400.0" y2="2867.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-shuttle lay-cofactor" d="M380 2781.5 Q400 2781.5 400 2799.5 Q400 2817.5 380 2817.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-shuttle lay-cofactor" x="374" y="2781.5" text-anchor="end" dominant-baseline="central">glutamate</text><text class="cf cy-shuttle lay-cofactor" x="374" y="2817.5" text-anchor="end" dominant-baseline="central">α-ketoglutarate</text><text class="en cy-shuttle lay-enzyme" x="420" y="2790.5" dominant-baseline="central">Aspartate aminotransferase</text><line class="ln cy-shuttle st-norm lay-core" x1="1050.0" y1="2868.0" x2="1050.0" y2="2733.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-shuttle lay-cofactor" d="M1070 2818.5 Q1050 2818.5 1050 2800.5 Q1050 2782.5 1070 2782.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-shuttle lay-cofactor" x="1076" y="2818.5" text-anchor="start" dominant-baseline="central">α-ketoglutarate</text><text class="cf cy-shuttle lay-cofactor" x="1076" y="2782.5" text-anchor="start" dominant-baseline="central">glutamate</text><text class="en cy-shuttle lay-enzyme" x="1030" y="2791.5" text-anchor="end" dominant-baseline="central">Aspartate aminotransferase</text><line class="ln cy-shuttle st-norm lay-core" x1="1050.0" y1="2688.0" x2="1050.0" y2="2543.0" marker-end="url(#arrow)" marker-start="url(#arrow)"/><path class="sc cy-shuttle lay-cofactor" d="M1070 2633.5 Q1050 2633.5 1050 2615.5 Q1050 2597.5 1070 2597.5" fill="none" marker-end="url(#arrowmute)"/><text class="cf cy-shuttle lay-cofactor" x="1076" y="2633.5" text-anchor="start" dominant-baseline="central">cytosolic NADH + H⁺</text><text class="cf cy-shuttle lay-cofactor" x="1076" y="2597.5" text-anchor="start" dominant-baseline="central">NAD⁺</text><text class="en cy-shuttle lay-enzyme" x="1030" y="2606.5" text-anchor="end" dominant-baseline="central">Malate dehydrogenase</text><path class="ln cy-shuttle st-con lay-core" d="M448 1940 L200 1940 L200 2520 L320 2520" fill="none" marker-end="url(#arrow)" stroke-dasharray="7 6"/><text class="nt cy-shuttle lay-note" x="210" y="2490" text-anchor="start" dominant-baseline="central">Krebs malate and shuttle malate are the same matrix pool</text><text class="nt cy-shuttle lay-note" x="300" y="2975" text-anchor="start" dominant-baseline="central">Net effect: cytosolic NADH made in glycolysis is delivered into the matrix as matrix NADH → about 2.5–3 ATP each.</text><text class="nt cy-shuttle lay-note" x="300" y="2997" text-anchor="start" dominant-baseline="central">Nothing crosses the membrane as NADH itself — only the carbon skeletons do. Used by liver, kidney and heart;</text><text class="nt cy-shuttle lay-note" x="300" y="3019" text-anchor="start" dominant-baseline="central">skeletal muscle uses the glycerol-3-phosphate shuttle instead, which sends electrons to FAD (about 1.5–2 ATP).</text></svg></div>
+
+      <div class="panel" id="ctrlpanel" style="left:12px;top:12px">
+        <div class="phead" data-drag><span class="grip">&#8942;&#8942;</span><b>Show on map</b><button data-collapse aria-label="Collapse">&#8722;</button></div>
+        <div class="pbody">
+          <div class="grp"><h4>Pathways</h4><div id="cyboxes"></div></div>
+          <div class="grp"><h4>Detail layers</h4><div id="layboxes"></div></div>
+          <div class="panelbtns"><button data-all="1">Select all</button><button data-all="0">Clear all</button></div>
+        </div>
+      </div>
+
+      <div class="panel" id="legendpanel" style="right:12px;top:12px">
+        <div class="phead" data-drag><span class="grip">&#8942;&#8942;</span><b>Legend</b><button data-collapse aria-label="Collapse">&#8722;</button></div>
+        <div class="pbody">
+          <div class="grp"><h4>Symbols</h4>
+            <div class="legrow"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="2" fill="none" stroke="var(--st-irr)" stroke-width="1.6"/><path d="M4.5 4.5L11.5 11.5M11.5 4.5L4.5 11.5" stroke="var(--st-irr)" stroke-width="1.6"/></svg><span>Irreversible step</span></div>
+            <div class="legrow"><svg width="17" height="16" viewBox="0 0 17 16"><polygon points="8.5,0 10.6,5.4 16.4,5.9 12,9.7 13.4,15.4 8.5,12.3 3.6,15.4 5,9.7 0.6,5.9 6.4,5.4" fill="var(--st-rl)"/></svg><span>Rate-limiting step</span></div>
+            <div class="legrow"><svg width="34" height="12" viewBox="0 0 34 12"><path d="M5 6H29" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/><path d="M8 2.5L4 6l4 3.5M26 2.5L30 6l-4 3.5" fill="none" stroke="var(--muted)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reversible (double-headed)</span></div>
+            <div class="legrow"><span class="line" style="border-top-style:dashed;border-color:var(--line2)"></span><span>Membrane / transport</span></div>
+            <div class="legrow"><span style="color:var(--act);font-weight:600">+</span><span>Activator</span><span style="color:var(--inh);font-weight:600;margin-left:10px">&minus;</span><span>Inhibitor</span></div>
+          </div>
+          <div class="grp"><h4>Arrow colours &mdash; step type</h4>
+            <div class="legrow"><span class="line" style="border-color:var(--st-rl)"></span><span>Rate-limiting</span></div>
+            <div class="legrow"><span class="line" style="border-color:var(--st-irr)"></span><span>Irreversible (not rate-limiting)</span></div>
+            <div class="legrow"><span class="line" style="border-color:var(--st-con)"></span><span>Step linking two pathways</span></div>
+            <p class="mini">Every other arrow is drawn in its own pathway colour below. These three step colours are never used as pathway colours.</p>
+          </div>
+          <div class="grp"><h4>Pathway colours</h4><div id="legcolors"></div></div>
+          <p class="mini">Amounts shown per glucose &mdash; everything below the aldolase split happens twice.</p>
+        </div>
+      </div>
+
+      <div class="zoombar">
+        <button data-zoom="out" aria-label="Zoom out">&minus;</button>
+        <button data-zoom="in" aria-label="Zoom in">+</button>
+        <button class="wide" data-zoom="fit">Fit width</button>
+        <button class="wide" data-zoom="all">Whole map</button>
+      </div>
+    </div>
+    <p class="hint">Drag to pan, scroll or pinch to zoom, double-tap to zoom in. Tap <b>+</b> on a panel to open it, <b>&minus;</b> to fold it away, and drag either panel by its header to move it anywhere on the map.</p>
+  </div>
+</section>
+
+<!-- CLINICAL -->
+<section class="view" id="view-clinical">
+  <div class="wrap pagehead"><h2>Clinical explanations</h2><p>Write-ups that connect these pathways to patients, labs and exam questions.</p></div>
+  <div class="wrap"><div class="postlist" id="postlist"></div></div>
+</section>
+
+<!-- SINGLE POST -->
+<section class="view" id="view-post">
+  <div class="wrap pagehead"><a class="btn ghost small" href="#/clinical">&larr; All explanations</a></div>
+  <div class="wrap"><article class="post" id="postbody"></article></div>
+</section>
+
+<!-- LOGIN -->
+<section class="view" id="view-login">
+  <div class="wrap pagehead"><h2>Sign in</h2><p>Accounts exist only so the site owner can publish. Everything on this site is readable without one.</p></div>
+  <div class="wrap" style="padding-bottom:64px">
+    <div class="formcard">
+      <div id="loginmsg"></div>
+      <div class="field"><label for="lemail">Email</label><input id="lemail" type="email" autocomplete="username"></div>
+      <div class="field"><label for="lpass">Password</label><input id="lpass" type="password" autocomplete="current-password"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn primary" id="loginbtn">Sign in</button>
+        <button class="btn ghost" id="signupbtn">Create admin account</button>
+      </div>
+      <p class="mini" style="color:var(--muted);font-size:.82rem;margin-top:14px">The admin account can only be created for the owner's email address, and only once. Use the same device and browser you publish from.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="view" id="view-admin">
+  <div class="wrap pagehead"><h2>Admin</h2><p id="adminwho"></p></div>
+  <div class="wrap adminwrap">
+    <div class="adminbox">
+      <h3 id="editorTitle">New explanation</h3>
+      <div id="adminmsg"></div>
+      <div class="field"><label for="ptitle">Title</label><input id="ptitle" type="text" placeholder="e.g. Arsenic poisoning and the PDH complex"></div>
+      <div class="field"><label for="psum">Short summary (shown in the list)</label><input id="psum" type="text" placeholder="One sentence"></div>
+      <div class="field"><label for="pbody">Body</label>
+        <textarea id="pbody" placeholder="Write in plain text.&#10;&#10;# Heading&#10;## Smaller heading&#10;**bold**  *italic*&#10;- bullet&#10;&#10;Blank lines separate paragraphs. Uploaded images and PDFs appear under the text, or place them inline with [[1]], [[2]] ..."></textarea></div>
+      <div class="field"><label for="pfiles">Attach images, PDFs or other files</label><input id="pfiles" type="file" multiple accept="image/*,application/pdf,.doc,.docx,.ppt,.pptx,.txt,.csv"></div>
+      <div class="chiprow" id="attchips"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+        <button class="btn primary" id="savepost">Publish</button>
+        <button class="btn ghost" id="newpost">Clear</button>
+      </div>
+    </div>
+    <div>
+      <div class="adminbox" style="margin-bottom:22px">
+        <h3>Published</h3>
+        <div id="adminlist"></div>
+      </div>
+      <div class="adminbox">
+        <h3>Make posts live for everyone</h3>
+        <p style="color:var(--muted);font-size:.9rem">GitHub Pages only serves files, so posts you write here are saved in this browser. To publish them to every visitor, export <code>posts.json</code> and commit it next to <code>index.html</code>. The site loads that file automatically.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary small" id="exportbtn">Export posts.json</button>
+          <label class="btn ghost small" style="cursor:pointer">Import posts.json<input id="importfile" type="file" accept="application/json" hidden></label>
+          <button class="btn ghost small" id="logoutbtn">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="wrap fl">
+  <span>&copy; <span id="yr"></span> NYCPM Unofficial Biochemistry &mdash; a student project, not affiliated with or endorsed by NYCPM.</span>
+  <a href="#/cycles" style="margin-left:auto">Cycles</a><a href="#/clinical">Clinical</a><a href="#/login" id="footlogin">Sign in</a>
+</div></footer>
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)},
+    $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+/* ---------------- theme ---------------- */
+var THEME='nycpm_theme';
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
+  $('#themebtn').innerHTML=t==='dark'?'&#9728;':'&#9789;';}
+applyTheme(localStorage.getItem(THEME)|| (window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
+$('#themebtn').addEventListener('click',function(){
+  var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  localStorage.setItem(THEME,t);applyTheme(t);});
+
+/* ---------------- nav ---------------- */
+var nav=$('#nav');
+$('#menutoggle').addEventListener('click',function(){nav.classList.toggle('open');});
+nav.addEventListener('click',function(e){if(e.target.tagName==='A')nav.classList.remove('open');});
+
+/* ---------------- map data ---------------- */
+var CYCLES=[
+ {id:'gng',name:'Gluconeogenesis',c:'--c-gng'},
+ {id:'gly',name:'Glycolysis',c:'--c-gly'},
+ {id:'pdh',name:'Pyruvate dehydrogenase',c:'--c-pdh'},
+ {id:'tca',name:'Krebs (TCA) cycle',c:'--c-tca'},
+ {id:'link',name:'Linking steps (PC / PEPCK)',c:'--st-con'},
+ {id:'lactate',name:'Lactate \u2014 Cori cycle',c:'--c-lactate'},
+ {id:'ethanol',name:'Ethanol fermentation',c:'--c-ethanol'},
+ {id:'bpg',name:'2,3-BPG shunt (RBC)',c:'--c-bpg'},
+ {id:'shuttle',name:'Malate\u2013aspartate shuttle',c:'--c-shuttle'}
+];
+var LAYERS=[
+ {id:'enzyme',name:'Enzymes & step symbols'},
+ {id:'cofactor',name:'Substrates & by-products'},
+ {id:'activator',name:'Activators'},
+ {id:'inhibitor',name:'Inhibitors'},
+ {id:'note',name:'Notes & clinical asides'},
+ {id:'compartment',name:'Compartment outlines'}
+];
+var stage=$('#stage'),viewer=$('#viewer'),PREF='nycpm_map_v1';
+function loadPrefs(){try{return JSON.parse(localStorage.getItem(PREF))||{}}catch(e){return {}}}
+function savePrefs(p){try{localStorage.setItem(PREF,JSON.stringify(p))}catch(e){}}
+var prefs=loadPrefs();
+function setVis(kind,id,on){
+  stage.classList.toggle('hide-'+kind+'-'+id,!on);
+  prefs[kind+'-'+id]=on;savePrefs(prefs);
+}
+function buildBoxes(){
+  var cb=$('#cyboxes'),lb=$('#layboxes'),lc=$('#legcolors');
+  CYCLES.forEach(function(c){
+    var on=prefs['cy-'+c.id]!==false;
+    var l=document.createElement('label');
+    l.innerHTML='<input type="checkbox" data-kind="cy" data-id="'+c.id+'"'+(on?' checked':'')+
+      '><span class="sw" style="background:var('+c.c+');border-color:var('+c.c+')"></span><span>'+c.name+'</span>';
+    cb.appendChild(l);setVis('cy',c.id,on);
+    if(c.id!=='link'){
+      var r=document.createElement('div');r.className='legrow';
+      r.innerHTML='<span class="line" style="border-color:var('+c.c+')"></span><span>'+c.name+'</span>';
+      lc.appendChild(r);
+    }
+  });
+  LAYERS.forEach(function(x){
+    var on=prefs['lay-'+x.id]!==false;
+    var l=document.createElement('label');
+    l.innerHTML='<input type="checkbox" data-kind="lay" data-id="'+x.id+'"'+(on?' checked':'')+'><span>'+x.name+'</span>';
+    lb.appendChild(l);setVis('lay',x.id,on);
+  });
+}
+buildBoxes();
+$('#ctrlpanel').addEventListener('change',function(e){
+  var t=e.target;if(t.tagName!=='INPUT')return;
+  setVis(t.getAttribute('data-kind'),t.getAttribute('data-id'),t.checked);
+});
+$$('#ctrlpanel [data-all]').forEach(function(b){b.addEventListener('click',function(){
+  var on=b.getAttribute('data-all')==='1';
+  $$('#ctrlpanel input[type=checkbox]').forEach(function(i){i.checked=on;setVis(i.getAttribute('data-kind'),i.getAttribute('data-id'),on);});
+});});
+
+/* ---------------- panels: collapse + drag ---------------- */
+$$('.panel').forEach(function(p){
+  var key='nycpm_panel_'+p.id;
+  var narrow=window.innerWidth<900;
+  var st=null;try{st=JSON.parse(localStorage.getItem(key))}catch(e){}
+  if(st){
+    if(st.collapsed)p.classList.add('collapsed');
+    if(st.left!=null&&!narrow){p.style.left=st.left+'px';p.style.top=st.top+'px';p.style.right='auto';}
+  }else{p.classList.add('collapsed');if(narrow&&p.id==='legendpanel')p.style.top='62px';}
+  function save(){
+    var st={collapsed:p.classList.contains('collapsed')};
+    if(p.style.right==='auto'){st.left=parseFloat(p.style.left)||0;st.top=parseFloat(p.style.top)||0;}
+    try{localStorage.setItem(key,JSON.stringify(st))}catch(e){}
+  }
+  var btn=p.querySelector('[data-collapse]');
+  btn.addEventListener('click',function(e){e.stopPropagation();
+    p.classList.toggle('collapsed');btn.innerHTML=p.classList.contains('collapsed')?'+':'&#8722;';save();});
+  if(p.classList.contains('collapsed'))btn.innerHTML='+';
+  var head=p.querySelector('[data-drag]'),drag=null;
+  head.addEventListener('pointerdown',function(e){
+    if(e.target.tagName==='BUTTON')return;
+    var r=p.getBoundingClientRect(),vr=viewer.getBoundingClientRect();
+    p.style.right='auto';p.style.left=(r.left-vr.left)+'px';p.style.top=(r.top-vr.top)+'px';
+    drag={x:e.clientX,y:e.clientY,l:r.left-vr.left,t:r.top-vr.top};
+    head.setPointerCapture(e.pointerId);head.style.cursor='grabbing';e.stopPropagation();
+  });
+  head.addEventListener('pointermove',function(e){
+    if(!drag)return;
+    var vr=viewer.getBoundingClientRect(),pw=p.offsetWidth,ph=p.offsetHeight;
+    var l=Math.min(Math.max(drag.l+e.clientX-drag.x,4),vr.width-pw-4);
+    var t=Math.min(Math.max(drag.t+e.clientY-drag.y,4),vr.height-Math.min(ph,60)-4);
+    p.style.left=l+'px';p.style.top=t+'px';e.stopPropagation();
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){head.addEventListener(ev,function(e){
+    if(drag){drag=null;head.style.cursor='grab';save();e.stopPropagation();}});});
+  p.addEventListener('pointerdown',function(e){e.stopPropagation();});
+  p.addEventListener('wheel',function(e){e.stopPropagation();},{passive:true});
+});
+
+/* ---------------- pan & zoom ---------------- */
+var MAPW=1560,MAPH=3100,sc=1,tx=0,ty=0,fitted=false;
+function apply(){stage.style.transform='translate('+tx+'px,'+ty+'px) scale('+sc+')';}
+function clamp(){
+  var vw=viewer.clientWidth,vh=viewer.clientHeight,w=MAPW*sc,h=MAPH*sc;
+  tx=w<vw?(vw-w)/2:Math.min(0,Math.max(vw-w,tx));
+  ty=h<vh?(vh-h)/2:Math.min(0,Math.max(vh-h,ty));
+}
+function fit(){
+  var vw=viewer.clientWidth;sc=Math.max(vw/MAPW,0.06)*0.98;tx=(vw-MAPW*sc)/2;ty=14;clamp();apply();fitted=true;
+}
+function fitAll(){
+  var vw=viewer.clientWidth,vh=viewer.clientHeight;
+  sc=Math.min(vw/MAPW,vh/MAPH)*0.97;tx=(vw-MAPW*sc)/2;ty=(vh-MAPH*sc)/2;clamp();apply();fitted=true;
+}
+function zoomAt(cx,cy,f){
+  var ns=Math.min(Math.max(sc*f,0.08),6);
+  var r=viewer.getBoundingClientRect(),px=cx-r.left,py=cy-r.top;
+  tx=px-(px-tx)*(ns/sc);ty=py-(py-ty)*(ns/sc);sc=ns;clamp();apply();
+}
+viewer.addEventListener('wheel',function(e){e.preventDefault();
+  zoomAt(e.clientX,e.clientY,e.deltaY<0?1.12:1/1.12);},{passive:false});
+var pts={},last=null,lastTap=0;
+viewer.addEventListener('pointerdown',function(e){
+  pts[e.pointerId]={x:e.clientX,y:e.clientY};
+  viewer.setPointerCapture(e.pointerId);
+  if(Object.keys(pts).length===1){
+    last={x:e.clientX,y:e.clientY};
+    var now=Date.now();if(now-lastTap<300)zoomAt(e.clientX,e.clientY,1.6);lastTap=now;
+  }
+});
+viewer.addEventListener('pointermove',function(e){
+  if(!pts[e.pointerId])return;
+  var ids=Object.keys(pts);
+  if(ids.length>=2){
+    var a=pts[ids[0]],b=pts[ids[1]];
+    var d0=Math.hypot(a.x-b.x,a.y-b.y);
+    pts[e.pointerId]={x:e.clientX,y:e.clientY};
+    a=pts[ids[0]];b=pts[ids[1]];
+    var d1=Math.hypot(a.x-b.x,a.y-b.y);
+    if(d0>0)zoomAt((a.x+b.x)/2,(a.y+b.y)/2,d1/d0);
+    return;
+  }
+  pts[e.pointerId]={x:e.clientX,y:e.clientY};
+  if(last){tx+=e.clientX-last.x;ty+=e.clientY-last.y;last={x:e.clientX,y:e.clientY};clamp();apply();}
+});
+['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+  viewer.addEventListener(ev,function(e){delete pts[e.pointerId];
+    if(!Object.keys(pts).length)last=null;});});
+$$('.zoombar button').forEach(function(b){b.addEventListener('click',function(){
+  var z=b.getAttribute('data-zoom'),r=viewer.getBoundingClientRect();
+  if(z==='fit')fit();else if(z==='all')fitAll();else zoomAt(r.left+r.width/2,r.top+r.height/2,z==='in'?1.3:1/1.3);});});
+window.addEventListener('resize',function(){clamp();apply();});
+
+/* ---------------- auth ---------------- */
+var ADMIN_EMAIL='brodielol856@gmail.com';
+var AKEY='nycpm_admin_v1',SKEY='nycpm_session_v1';
+function b64(buf){var b=new Uint8Array(buf),s='';for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);return btoa(s);}
+function rand(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return b64(a);}
+function derive(pass,salt){
+  if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error('This browser blocks secure hashing. Open the site over https.'));
+  var enc=new TextEncoder();
+  return crypto.subtle.importKey('raw',enc.encode(pass),{name:'PBKDF2'},false,['deriveBits'])
+    .then(function(k){return crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:150000,hash:'SHA-256'},k,256);})
+    .then(b64);
+}
+function getAdmin(){try{return JSON.parse(localStorage.getItem(AKEY))}catch(e){return null}}
+function isAdmin(){return localStorage.getItem(SKEY)==='1'&&!!getAdmin();}
+function setSession(on){on?localStorage.setItem(SKEY,'1'):localStorage.removeItem(SKEY);refreshAuthUI();}
+function refreshAuthUI(){
+  var a=isAdmin();
+  $('#navadmin').hidden=!a;
+  $('#navlogin').textContent=a?'Sign out':'Sign in';
+  $('#footlogin').textContent=a?'Sign out':'Sign in';
+  if(a){$('#adminwho').textContent='Signed in as '+ADMIN_EMAIL+'. Posts you publish here are stored in this browser \u2014 export posts.json to make them live for visitors.';}
+  renderAdminList();
+}
+function say(el,kind,text){el.innerHTML='<div class="msg '+kind+'">'+text+'</div>';}
+$('#navlogin').addEventListener('click',function(e){
+  if(isAdmin()){e.preventDefault();setSession(false);location.hash='#/home';}});
+$('#footlogin').addEventListener('click',function(e){
+  if(isAdmin()){e.preventDefault();setSession(false);location.hash='#/home';}});
+$('#logoutbtn').addEventListener('click',function(){setSession(false);location.hash='#/home';});
+
+$('#signupbtn').addEventListener('click',function(){
+  var m=$('#loginmsg'),em=$('#lemail').value.trim().toLowerCase(),pw=$('#lpass').value;
+  if(em!==ADMIN_EMAIL)return say(m,'err','Public accounts are not needed \u2014 everything here is readable without signing in. Only the owner\u2019s address can create the admin account.');
+  if(pw.length<10)return say(m,'err','Choose a password of at least 10 characters.');
+  if(getAdmin())return say(m,'err','The admin account already exists on this browser. Sign in instead.');
+  var salt=rand(16);
+  derive(pw,salt).then(function(h){
+    localStorage.setItem(AKEY,JSON.stringify({email:em,salt:salt,hash:h}));
+    setSession(true);location.hash='#/admin';
+  }).catch(function(err){say(m,'err',err.message);});
+});
+$('#loginbtn').addEventListener('click',function(){
+  var m=$('#loginmsg'),em=$('#lemail').value.trim().toLowerCase(),pw=$('#lpass').value,a=getAdmin();
+  if(!a)return say(m,'err','No admin account exists in this browser yet. Create one, or import your posts.json on a device where it does.');
+  if(em!==a.email)return say(m,'err','That email does not match the admin account.');
+  derive(pw,a.salt).then(function(h){
+    if(h!==a.hash)return say(m,'err','Incorrect password.');
+    setSession(true);$('#lpass').value='';location.hash='#/admin';
+  }).catch(function(err){say(m,'err',err.message);});
+});
+$('#lpass').addEventListener('keydown',function(e){if(e.key==='Enter')$('#loginbtn').click();});
+
+/* ---------------- posts ---------------- */
+var PKEY='nycpm_posts_v1',remotePosts=[],localPosts=[],attachments=[],editingId=null;
+function loadLocal(){try{localPosts=JSON.parse(localStorage.getItem(PKEY))||[]}catch(e){localPosts=[]}}
+function saveLocal(){try{localStorage.setItem(PKEY,JSON.stringify(localPosts));return true}
+  catch(e){alert('This browser\u2019s storage is full \u2014 the post was not saved. Export posts.json, then remove some large attachments.');return false}}
+function allPosts(){
+  var map={};remotePosts.forEach(function(p){map[p.id]=p});localPosts.forEach(function(p){map[p.id]=p});
+  return Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
+}
+loadLocal();
+fetch('posts.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
+  if(j&&Array.isArray(j.posts||j)){remotePosts=(j.posts||j);renderList();if(currentRoute()[0]==='post')route();}
+}).catch(function(){});
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
+function inline(s){
+  return esc(s).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+               .replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>')
+               .replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');
+}
+function attHtml(a){
+  if(!a)return '';
+  if(/^image\//.test(a.type))return '<figure class="att"><img src="'+a.data+'" alt="'+esc(a.name)+'"><figcaption class="dateline" style="margin:6px 0 0">'+esc(a.name)+'</figcaption></figure>';
+  if(a.type==='application/pdf')return '<div class="att"><embed src="'+a.data+'" type="application/pdf"><p style="margin:8px 0 0"><a class="filelink" href="'+a.data+'" download="'+esc(a.name)+'">Download '+esc(a.name)+'</a></p></div>';
+  return '<p class="att"><a class="filelink" href="'+a.data+'" download="'+esc(a.name)+'">Download '+esc(a.name)+'</a></p>';
+}
+function render(post){
+  var body=String(post.body||''),atts=post.attachments||[],used={},out=[],buf=[];
+  function flush(){if(buf.length){out.push('<p>'+inline(buf.join(' '))+'</p>');buf=[]}}
+  body.split(/\r?\n/).forEach(function(raw){
+    var line=raw.trim();
+    var m=line.match(/^\[\[(\d+)\]\]$/);
+    if(m){flush();var i=parseInt(m[1],10)-1;used[i]=1;out.push(attHtml(atts[i]));return;}
+    if(!line){flush();return;}
+    if(/^###\s+/.test(line)){flush();out.push('<h3>'+inline(line.replace(/^###\s+/,''))+'</h3>');return;}
+    if(/^##\s+/.test(line)){flush();out.push('<h3>'+inline(line.replace(/^##\s+/,''))+'</h3>');return;}
+    if(/^#\s+/.test(line)){flush();out.push('<h2>'+inline(line.replace(/^#\s+/,''))+'</h2>');return;}
+    if(/^[-*]\s+/.test(line)){flush();out.push('<ul><li>'+inline(line.replace(/^[-*]\s+/,''))+'</li></ul>');return;}
+    buf.push(line);
+  });
+  flush();
+  var html=out.join('\n').replace(/<\/ul>\s*<ul>/g,'');
+  atts.forEach(function(a,i){if(!used[i])html+=attHtml(a);});
+  return html;
+}
+function renderList(){
+  var box=$('#postlist'),posts=allPosts();
+  if(!posts.length){box.innerHTML='<div class="empty">No explanations published yet. Check back soon.</div>';return;}
+  box.innerHTML=posts.map(function(p){
+    return '<a class="postitem" href="#/post/'+encodeURIComponent(p.id)+'"><div><h3>'+esc(p.title)+'</h3>'+
+      (p.summary?'<p>'+esc(p.summary)+'</p>':'')+'</div><span class="meta">'+esc((p.date||'').slice(0,10))+'</span></a>';
+  }).join('');
+}
+function renderAdminList(){
+  var box=$('#adminlist');if(!box)return;
+  if(!localPosts.length){box.innerHTML='<p style="color:var(--muted);font-size:.9rem;margin:0">Nothing written on this device yet.</p>';return;}
+  box.innerHTML=localPosts.slice().sort(function(a,b){return (b.date||'').localeCompare(a.date||'')}).map(function(p){
+    return '<div class="adminrow"><b>'+esc(p.title)+'</b>'+
+      '<button class="btn ghost small" data-edit="'+esc(p.id)+'">Edit</button>'+
+      '<button class="btn danger small" data-del="'+esc(p.id)+'">Delete</button></div>';
+  }).join('');
+}
+$('#adminlist').addEventListener('click',function(e){
+  var ed=e.target.getAttribute('data-edit'),dl=e.target.getAttribute('data-del');
+  if(ed){var p=localPosts.filter(function(x){return x.id===ed})[0];if(!p)return;
+    editingId=p.id;$('#ptitle').value=p.title;$('#psum').value=p.summary||'';$('#pbody').value=p.body||'';
+    attachments=(p.attachments||[]).slice();drawChips();$('#editorTitle').textContent='Editing: '+p.title;
+    window.scrollTo({top:0,behavior:'smooth'});}
+  if(dl){if(!confirm('Delete this explanation from this device?'))return;
+    localPosts=localPosts.filter(function(x){return x.id!==dl});saveLocal();renderAdminList();renderList();}
+});
+function drawChips(){
+  $('#attchips').innerHTML=attachments.map(function(a,i){
+    return '<span class="chip">[['+(i+1)+']] '+esc(a.name)+'<button data-rm="'+i+'" aria-label="Remove">&times;</button></span>';}).join('');
+}
+$('#attchips').addEventListener('click',function(e){
+  var i=e.target.getAttribute('data-rm');if(i===null)return;
+  attachments.splice(parseInt(i,10),1);drawChips();});
+$('#pfiles').addEventListener('change',function(e){
+  var files=Array.prototype.slice.call(e.target.files||[]);
+  files.forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(){attachments.push({name:f.name,type:f.type||'application/octet-stream',data:r.result});drawChips();};
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+});
+$('#newpost').addEventListener('click',function(){
+  editingId=null;$('#ptitle').value='';$('#psum').value='';$('#pbody').value='';attachments=[];drawChips();
+  $('#editorTitle').textContent='New explanation';$('#adminmsg').innerHTML='';});
+$('#savepost').addEventListener('click',function(){
+  var m=$('#adminmsg'),t=$('#ptitle').value.trim();
+  if(!isAdmin())return say(m,'err','Sign in first.');
+  if(!t)return say(m,'err','Give the explanation a title.');
+  var post={id:editingId||('p'+Date.now().toString(36)),title:t,summary:$('#psum').value.trim(),
+            body:$('#pbody').value,attachments:attachments.slice(),date:new Date().toISOString()};
+  if(editingId){localPosts=localPosts.map(function(p){return p.id===editingId?post:p});}
+  else localPosts.push(post);
+  if(!saveLocal())return;
+  editingId=post.id;$('#editorTitle').textContent='Editing: '+post.title;
+  say(m,'ok','Saved. It is live in this browser \u2014 export posts.json and commit it to publish for everyone.');
+  renderAdminList();renderList();
+});
+$('#exportbtn').addEventListener('click',function(){
+  var blob=new Blob([JSON.stringify({posts:localPosts},null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='posts.json';a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},2000);});
+$('#importfile').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;var r=new FileReader();
+  r.onload=function(){try{
+    var j=JSON.parse(r.result),arr=j.posts||j;
+    if(!Array.isArray(arr))throw new Error('bad');
+    var map={};localPosts.forEach(function(p){map[p.id]=p});arr.forEach(function(p){map[p.id]=p});
+    localPosts=Object.keys(map).map(function(k){return map[k]});
+    saveLocal();renderAdminList();renderList();say($('#adminmsg'),'ok','Imported '+arr.length+' post(s).');
+  }catch(err){say($('#adminmsg'),'err','That file could not be read as posts.json.');}};
+  r.readAsText(f);e.target.value='';});
+
+/* ---------------- router ---------------- */
+function currentRoute(){
+  var h=(location.hash||'#/home').replace(/^#\/?/,'').split('/');
+  return [h[0]||'home',h[1]?decodeURIComponent(h[1]):null];
+}
+function route(){
+  var r=currentRoute(),name=r[0];
+  if(name==='admin'&&!isAdmin())name='login';
+  if(name==='post'){
+    var p=allPosts().filter(function(x){return x.id===r[1]})[0];
+    $('#postbody').innerHTML=p?('<h1>'+esc(p.title)+'</h1><p class="dateline">'+esc((p.date||'').slice(0,10))+'</p>'+render(p))
+      :'<h2>Not found</h2><p>That explanation is not available on this device yet.</p>';
+  }
+  if(name==='clinical')renderList();
+  var known={home:1,cycles:1,clinical:1,post:1,login:1,admin:1};
+  if(!known[name])name='home';
+  $$('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+name);});
+  $$('nav.main a').forEach(function(a){
+    a.classList.toggle('on',a.getAttribute('data-route')===name||(name==='post'&&a.getAttribute('data-route')==='clinical'));});
+  if(name==='cycles'){requestAnimationFrame(function(){if(!fitted)fit();else{clamp();apply();}});}
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+refreshAuthUI();renderList();drawChips();route();
+if(!fitted)setTimeout(function(){if(viewer.clientWidth&&!fitted)fit();},60);
+})();
+</script>
+</body>
+</html>
