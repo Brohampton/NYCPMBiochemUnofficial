@@ -800,15 +800,16 @@ function apiPost(payload){
 }
 
 /* ---------------- data ---------------- */
-var PKEY='nycpm_posts_v1',remoteItems=[],localPosts=[],attachments=[],editingId=null,editKind='doc',hubFilter='all';
+var PKEY='nycpm_posts_v1',remoteItems=[],filePosts=[],localPosts=[],attachments=[],editingId=null,editKind='doc',hubFilter='all';
 function loadLocal(){try{localPosts=JSON.parse(localStorage.getItem(PKEY))||[]}catch(e){localPosts=[]}
   localPosts.forEach(function(p){if(!p.kind)p.kind='doc';});}
 function saveLocal(){try{localStorage.setItem(PKEY,JSON.stringify(localPosts));return true}
   catch(e){alert('This browser\u2019s storage is full. Connect the Apps Script backend (Admin panel) so big files live in Drive instead of in this browser.');return false}}
 function allItems(){
   var map={};
-  remoteItems.forEach(function(p){map[p.id]=p});
-  localPosts.forEach(function(p){map[p.id]=p});
+  filePosts.forEach(function(p){map[p.id]=p});     /* posts.json committed to GitHub */
+  remoteItems.forEach(function(p){map[p.id]=p});   /* live backend */
+  localPosts.forEach(function(p){map[p.id]=p});    /* this device */
   return Object.keys(map).map(function(k){return map[k]})
     .sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
 }
@@ -826,8 +827,9 @@ function pullRemote(){
   }).catch(function(){});
 }
 fetch('posts.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
-  if(j){var arr=j.posts||j; if(Array.isArray(arr)){arr.forEach(function(p){if(!p.kind)p.kind='doc';});
-    remoteItems=remoteItems.concat(arr);renderList();renderExams();}}
+  if(j){var arr=j.posts||j.items||j; if(Array.isArray(arr)){arr.forEach(function(p){if(!p.kind)p.kind='doc';});
+    filePosts=arr;renderList();renderExams();renderAdminList();
+    var r0=currentRoute()[0]; if(r0==='post'||r0==='exam')route();}}
 }).catch(function(){}).then(pullRemote);
 
 /* ---------------- helpers ---------------- */
@@ -1078,6 +1080,7 @@ $('#adminlist').addEventListener('click',function(e){
   if(dl){if(!confirm('Delete this item?'))return;
     localPosts=localPosts.filter(function(x){return x.id!==dl});saveLocal();
     remoteItems=remoteItems.filter(function(x){return x.id!==dl});
+    filePosts=filePosts.filter(function(x){return x.id!==dl});
     renderAdminList();renderList();renderExams();
     if(api().url)apiPost({action:'delete',id:dl}).catch(function(err){alert('Deleted locally, but the backend said: '+err.message)});}
 });
