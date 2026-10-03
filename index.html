@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NYCPM Unofficial Biochemistry</title>
+<title>NYCPM Unofficial</title>
 <meta name="description" content="A student-built biochemistry reference: interactive metabolic pathway maps and clinical explanations.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -306,6 +306,72 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 .statepill.prog{border-color:var(--gold);color:var(--gold)}
 .postitem .rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .postitem{align-items:flex-start}
+
+/* ---------- histology / physiology ---------- */
+.cards.tight{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.thumbs{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));padding-bottom:40px}
+.thumb{display:block;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);text-decoration:none;color:inherit;transition:.15s}
+.thumb:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.thumb img{display:block;width:100%;height:150px;object-fit:cover;background:#fff}
+.thumb span{display:block;padding:10px 12px;font-size:.9rem;font-weight:500}
+.slidehead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.slidewrap{display:grid;gap:18px;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);align-items:start}
+@media (max-width:860px){.slidewrap{grid-template-columns:1fr}}
+.slidebox{position:relative;border:1px solid var(--line2);border-radius:14px;overflow:hidden;background:#fff;line-height:0}
+.slidebox img{width:100%;display:block}
+.hot{position:absolute;transform:translate(-50%,-50%);background:none;border:0;padding:0;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:2}
+.hot .dot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.85);border:2.5px solid var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.25);display:block;flex:none;transition:.12s}
+.hot .hlab{font:500 .76rem/1.2 "IBM Plex Sans",sans-serif;background:rgba(17,17,17,.82);color:#fff;border-radius:6px;padding:3px 7px;white-space:nowrap;opacity:0;transition:.12s;pointer-events:none}
+.hot:hover .hlab,.hot.on .hlab{opacity:1}
+.hot:hover .dot,.hot.on .dot{background:var(--gold);transform:scale(1.25)}
+.hot.ring .dot{width:22px;height:22px;border-color:var(--bad);background:rgba(255,255,255,.25);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(179,38,30,.5)}50%{box-shadow:0 0 0 10px rgba(179,38,30,0)}}
+.slideinfo .box{margin-top:0}
+.slidebox.quiz{max-width:620px;margin:0 auto 14px}
+.qtextq{font-size:1.05rem;font-weight:500;margin:12px 0}
+.opt.locked{cursor:default}
+.opt.right{border-color:var(--c-tca);background:var(--bg-tca)}
+.opt.wrong{border-color:var(--inh);background:color-mix(in srgb,var(--inh) 12%,transparent)}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line2);border-radius:14px;padding:12px 14px;cursor:pointer;background:transparent;text-align:left;font:inherit;color:inherit;width:100%;transition:.12s}
+.opt:hover{border-color:var(--accent)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center;font-size:.82rem;font-weight:600;color:var(--muted)}
+.opts{display:grid;gap:10px}
+.exp{margin-top:14px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:12px 16px;font-size:.95rem}
+#animstage{border:1px solid var(--line2);border-radius:16px;background:var(--panel);padding:10px;margin:14px 0}
+#animstage svg{width:100%;height:auto;display:block;font-family:"IBM Plex Sans",sans-serif}
+#animstage .ax{stroke:var(--line2);stroke-width:1.5}
+#animstage .dash{stroke:var(--line2);stroke-width:1.2;stroke-dasharray:5 5}
+#animstage .al{fill:var(--muted);font-size:12px}
+#animstage .curve{fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#animstage .dot2{fill:var(--gold)}
+#animstage .panel2{fill:var(--accent-soft)}
+#animstage .phase{fill:var(--accent);font-size:13px;font-weight:600}
+#animstage .memb2{fill:var(--bg-ethanol);stroke:var(--line2)}
+#animstage .prot{fill:var(--bg-gly);stroke:var(--c-gly);stroke-width:2}
+#animstage .plab{fill:var(--c-gly);font-size:13px;font-weight:600}
+#animstage .na{fill:#F3B7B4;stroke:#B3261E;stroke-width:1.5}
+#animstage .k{fill:#BBD5F2;stroke:#1F5FA8;stroke-width:1.5}
+#animstage .ca{fill:#CDEBD8;stroke:#15803D;stroke-width:1.5}
+#animstage .ionl{font-size:10px;fill:#222}
+#animstage .term{fill:var(--bg-pdh);stroke:var(--c-pdh);stroke-width:2}
+#animstage .post{fill:var(--bg-lactate);stroke:var(--c-lactate);stroke-width:2}
+#animstage .post.on{fill:var(--bg-tca);stroke:var(--c-tca)}
+#animstage .ves{fill:#fff;stroke:var(--c-bpg);stroke-width:2}
+#animstage .nt{fill:var(--c-bpg)}
+#animstage .nt.fade{opacity:.4}
+#animstage .spark{fill:var(--gold)}
+#animstage .heart{fill:var(--bg-lactate);stroke:var(--c-lactate);stroke-width:2}
+#animstage .septum{stroke:var(--c-lactate);stroke-width:1.5;opacity:.5}
+#animstage .node{fill:var(--panel);stroke:var(--c-tca);stroke-width:2.5}
+#animstage .node.lit{fill:var(--gold);stroke:var(--gold)}
+#animstage .tract{fill:none;stroke:var(--line2);stroke-width:3.5;stroke-linecap:round}
+#animstage .tract.lit{stroke:var(--gold)}
+#animstage .zd{stroke:var(--c-tca);stroke-width:5;stroke-linecap:round}
+#animstage .ml{stroke:var(--c-pdh);stroke-width:2.5;stroke-dasharray:4 3}
+#animstage .thick{stroke:var(--c-gng);stroke-width:7;stroke-linecap:round}
+#animstage .thin{stroke:var(--c-lactate);stroke-width:3.5;stroke-linecap:round}
+#hsbox{position:relative;border:1px dashed var(--line2);border-radius:12px;overflow:hidden;min-height:60px;background:#fff}
+#hsbox img{width:100%;display:block}
 .view{display:none}
 .view.on{display:block}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -314,11 +380,13 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 <body>
 <header class="site">
   <div class="wrap bar">
-    <a class="brand" href="#/home"><span class="dot">Bx</span>NYCPM Unofficial Biochemistry</a>
+    <a class="brand" href="#/home"><span class="dot">Bx</span>NYCPM Unofficial</a>
     <button class="iconbtn menutoggle" id="menutoggle" aria-label="Menu">&#9776;</button>
     <nav class="main" id="nav">
       <a href="#/home" data-route="home">Home</a>
       <a href="#/cycles" data-route="cycles">Biochemistry cycles</a>
+      <a href="#/histology" data-route="histology" id="navhisto">Histology</a>
+      <a href="#/physiology" data-route="physiology" id="navphys">Physiology</a>
       <a href="#/clinical" data-route="clinical">Document Hub</a>
       <a href="#/exams" data-route="exams">Interactive exams</a>
       <a href="#/admin" data-route="admin" id="navadmin" hidden>Admin</a>
@@ -351,6 +419,16 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
       <div class="swatchrow"><i style="background:var(--c-lactate)"></i><i style="background:var(--c-bpg)"></i><i style="background:var(--c-shuttle)"></i></div>
       <h3>Document Hub (Clinical Explanations Included)</h3>
       <p>Clinical write-ups plus every study file: PDFs, slides, images, documents and interactive artifacts &mdash; readable and downloadable on any phone, tablet or computer.</p>
+    </a>
+    <a class="card" href="#/histology">
+      <div class="swatchrow"><i style="background:var(--c-lactate)"></i><i style="background:var(--c-gng)"></i><i style="background:var(--c-tca)"></i></div>
+      <h3>Histology atlas</h3>
+      <p>A slide box of labelled micrographs. Hover or tap a marker to name a structure, click it for what it is, where it is found and what it does &mdash; then test yourself in the slide quiz.</p>
+    </a>
+    <a class="card" href="#/physiology">
+      <div class="swatchrow"><i style="background:var(--c-bpg)"></i><i style="background:var(--c-gly)"></i><i style="background:var(--gold)"></i></div>
+      <h3>Physiology animations</h3>
+      <p>Watch the action potential, the Na&#8314;/K&#8314; pump, the synapse, cardiac conduction and the cross-bridge cycle run step by step, with the phase named as it happens.</p>
     </a>
     <div class="card" style="cursor:default">
       <div class="swatchrow"><i style="background:var(--st-rl)"></i><i style="background:var(--st-irr)"></i><i style="background:var(--st-con)"></i></div>
@@ -452,6 +530,106 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
   </div>
 </section>
 
+
+<!-- HISTOLOGY: sections -->
+<section class="view" id="view-histology">
+  <div class="wrap pagehead"><h2>Histology atlas</h2>
+    <p>Pick a section to open its slide box. On a slide, hover or tap a marker to name the structure and click it for the full explanation.</p></div>
+  <div class="wrap"><div class="cards tight" id="histosections"></div></div>
+  <div class="wrap" style="padding-bottom:48px">
+    <a class="btn primary" href="#/histoquiz">Start the slide quiz</a>
+  </div>
+</section>
+
+<!-- HISTOLOGY: one section -->
+<section class="view" id="view-histosection">
+  <div class="wrap pagehead" style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <a class="btn ghost small" href="#/histology">&larr; All sections</a>
+    <h2 id="histosecname" style="margin:0"></h2>
+  </div>
+  <div class="wrap"><div class="thumbs" id="histogrid"></div></div>
+</section>
+
+<!-- HISTOLOGY: slide viewer -->
+<section class="view" id="view-slide">
+  <div class="wrap" style="padding-top:26px;padding-bottom:50px" id="slideview"></div>
+</section>
+
+<!-- HISTOLOGY QUIZ -->
+<section class="view" id="view-histoquiz">
+  <div class="wrap pagehead" style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <a class="btn ghost small" href="#/histology">&larr; Atlas</a>
+    <h2 style="margin:0">Slide quiz</h2>
+    <span class="spacer"></span><span class="pill" id="hqscore">0 / 0 correct</span>
+  </div>
+  <div class="wrap" style="padding-bottom:50px">
+    <div class="card" id="hqsetup">
+      <h3 style="margin-top:0">Which sections do you want?</h3>
+      <div id="hqsections" style="display:grid;gap:6px;max-width:460px"></div>
+      <p class="hint">A slide appears with one structure ringed in red; name it. Questions keep coming until you stop.</p>
+      <button class="btn primary" id="hqstart">Start</button>
+    </div>
+    <div class="card" id="hqplay" hidden>
+      <div style="display:flex;gap:10px;margin-bottom:10px"><button class="btn ghost small" id="hqback">Change sections</button></div>
+      <div id="hqbody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PHYSIOLOGY -->
+<section class="view" id="view-physiology">
+  <div class="wrap pagehead"><h2>Physiology animations</h2>
+    <p>Each concept runs as a loop with the current phase named underneath. Pause at any point, slow it down, or restart.</p></div>
+  <div class="wrap"><div class="cards tight" id="physlist"></div></div>
+  <div class="wrap" style="padding-bottom:48px">
+    <a class="btn primary" href="#/physioquiz">Physiology concept quiz</a>
+    <a class="btn ghost" href="#/bioquiz">Biochemistry concept quiz</a>
+  </div>
+</section>
+
+<!-- PHYSIOLOGY: one animation -->
+<section class="view" id="view-anim">
+  <div class="wrap pagehead" style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <a class="btn ghost small" href="#/physiology">&larr; All animations</a>
+    <h2 id="animtitle" style="margin:0"></h2>
+  </div>
+  <div class="wrap" style="padding-bottom:50px">
+    <p class="muted" id="animblurb"></p>
+    <div id="animstage"></div>
+    <div class="nav" id="animctl">
+      <button class="btn primary" data-a="play">Pause</button>
+      <button class="btn ghost" data-a="restart">Restart</button>
+      <button class="btn ghost" data-a="slow">Slow motion</button>
+    </div>
+  </div>
+</section>
+
+<!-- BIOCHEM CONCEPT QUIZ -->
+<section class="view" id="view-bioquiz">
+  <div class="wrap pagehead" style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <h2 style="margin:0">Biochemistry concept quiz</h2>
+    <span class="spacer"></span><span class="pill" id="bqscore">0 / 0 correct</span>
+  </div>
+  <div class="wrap" style="padding-bottom:50px"><div class="card">
+    <p class="muted">Quick questions on the pathways: regulation, cofactors, locations and the diseases that go with them. Separate from the Interactive exams &mdash; nothing is recorded, it just keeps going.</p>
+    <button class="btn primary" id="bqstart">Start / new question</button>
+    <div id="bqbody" style="margin-top:16px"></div>
+  </div></div>
+</section>
+
+<!-- PHYSIOLOGY CONCEPT QUIZ -->
+<section class="view" id="view-physioquiz">
+  <div class="wrap pagehead" style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <h2 style="margin:0">Physiology concept quiz</h2>
+    <span class="spacer"></span><span class="pill" id="pqscore">0 / 0 correct</span>
+  </div>
+  <div class="wrap" style="padding-bottom:50px"><div class="card">
+    <p class="muted">Membrane potentials, the pump, synaptic transmission, excitation&ndash;contraction coupling and cardiac conduction.</p>
+    <button class="btn primary" id="pqstart">Start / new question</button>
+    <div id="pqbody" style="margin-top:16px"></div>
+  </div></div>
+</section>
+
 <!-- LOGIN -->
 <section class="view" id="view-login">
   <div class="wrap pagehead"><h2>Sign in</h2><p>Accounts exist only so the site owner can publish. Everything on this site is readable without one.</p></div>
@@ -506,6 +684,28 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
     </div>
     <div>
       <div class="adminbox" style="margin-bottom:22px">
+        <h3>Histology slide</h3>
+        <div class="field"><label for="sltitle">Slide title</label><input id="sltitle" type="text" placeholder="e.g. Lymph node medulla"></div>
+        <div class="field"><label for="slsection">Section</label><select id="slsection" style="width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 13px"></select></div>
+        <div class="field"><label for="sldesc">One-line description (shown under the title)</label><input id="sldesc" type="text"></div>
+        <div class="field"><label for="slinfo">What it is, where it is found, what it does</label><textarea id="slinfo" style="min-height:110px"></textarea></div>
+        <div class="field"><label for="slimg">Slide image</label><input id="slimg" type="file" accept="image/*"></div>
+        <div id="hswrap" hidden>
+          <p class="mini" style="color:var(--muted);font-size:.84rem">Click anywhere on the image to drop a marker, then type its label and explanation. Click a marker again to remove it.</p>
+          <div id="hsbox"></div>
+          <div class="chiprow" id="hslist"></div>
+        </div>
+        <div style="margin-top:14px"><button class="btn primary" id="saveslide">Save slide</button></div>
+      </div>
+      <div class="adminbox" style="margin-bottom:22px">
+        <h3>Show or hide slides</h3>
+        <div id="slidetoggles"></div>
+      </div>
+      <div class="adminbox" style="margin-bottom:22px">
+        <h3>Sections visible on the site</h3>
+        <div id="featureboxes" style="display:grid;gap:6px"></div>
+      </div>
+      <div class="adminbox" style="margin-bottom:22px">
         <h3>Published</h3>
         <div id="adminlist"></div>
       </div>
@@ -531,7 +731,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 </main>
 
 <footer class="site"><div class="wrap fl">
-  <span>&copy; <span id="yr"></span> NYCPM Unofficial Biochemistry &mdash; a student project, not affiliated with or endorsed by NYCPM.</span>
+  <span>&copy; <span id="yr"></span> NYCPM Unofficial &mdash; a student project, not affiliated with or endorsed by NYCPM.</span>
   <a href="#/cycles" style="margin-left:auto">Cycles</a><a href="#/clinical">Clinical</a><a href="#/login" id="footlogin">Sign in</a>
 </div></footer>
 <script>
@@ -813,7 +1013,7 @@ function allItems(){
   return Object.keys(map).map(function(k){return map[k]})
     .sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
 }
-function docs(){return allItems().filter(function(p){return p.kind!=='exam'})}
+function docs(){return allItems().filter(function(p){return !p.kind||p.kind==='doc'})}
 function exams(){return allItems().filter(function(p){return p.kind==='exam'})}
 loadLocal();
 
@@ -822,8 +1022,8 @@ function pullRemote(){
     if(!j)return;
     var arr=j.items||j.posts||[];
     if(Array.isArray(arr)){remoteItems=arr.map(function(p){if(!p.kind)p.kind='doc';return p});}
-    renderList();renderExams();renderAdminList();
-    var r=currentRoute()[0]; if(r==='post'||r==='exam')route();
+    renderList();renderExams();renderAdminList();applyFeatures();
+    var r=currentRoute()[0]; if(r==='post'||r==='exam'||r==='slide'||r==='histosection'||r==='histology')route();
   }).catch(function(){});
 }
 fetch('posts.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
@@ -1049,10 +1249,10 @@ function openExam(id){
 /* ---------------- admin ---------------- */
 function renderAdminList(){
   var box=$('#adminlist');if(!box)return;
-  var mine=allItems();
+  var mine=allItems().filter(function(p){return p.kind!=='settings'});
   if(!mine.length){box.innerHTML='<p style="color:var(--muted);font-size:.9rem;margin:0">Nothing published yet.</p>';return;}
   box.innerHTML=mine.map(function(p){
-    return '<div class="adminrow"><b>'+(p.kind==='exam'?'\u25B6 ':'')+esc(p.title)+'</b>'+
+    return '<div class="adminrow"><b>'+(p.kind==='exam'?'\u25B6 ':(p.kind==='slide'?'\u25C9 ':''))+esc(p.title)+'</b>'+
       '<button class="btn ghost small" data-edit="'+esc(p.id)+'">Edit</button>'+
       '<button class="btn danger small" data-del="'+esc(p.id)+'">Delete</button></div>';
   }).join('');
@@ -1184,10 +1384,628 @@ $('#importfile').addEventListener('change',function(e){
   }catch(err){say($('#adminmsg'),'err','That file could not be read.');}};
   r.readAsText(f);e.target.value='';});
 
+
+/* ================= SITE SETTINGS (features + hidden slides) ================= */
+var SETID='site-settings';
+function settings(){
+  var s=allItems().filter(function(x){return x.id===SETID})[0];
+  var d={features:{histology:true,physiology:true,bioquiz:true,physioquiz:true},hidden:{}};
+  if(!s)return d;
+  return {features:Object.assign(d.features,s.features||{}),hidden:s.hidden||{}};
+}
+function saveSettings(st){
+  var item={id:SETID,kind:'settings',title:'Site settings',date:new Date().toISOString(),
+            features:st.features,hidden:st.hidden};
+  localPosts=localPosts.filter(function(x){return x.id!==SETID}).concat([item]);saveLocal();
+  remoteItems=remoteItems.filter(function(x){return x.id!==SETID}).concat([item]);
+  if(api().url)apiPost({action:'save',item:item}).catch(function(){});
+  applyFeatures();
+}
+function applyFeatures(){
+  var f=settings().features;
+  [['histology','navhisto'],['physiology','navphys']].forEach(function(p){
+    var el=$('#'+p[1]); if(el)el.hidden=!f[p[0]];
+  });
+}
+
+/* ================= HISTOLOGY DATA ================= */
+var HISTO={sections:[],glossary:{},slides:[]},histoReady=false,histoQ=null,histoSel={};
+function customSlides(){return allItems().filter(function(x){return x.kind==='slide'})}
+function allSlides(){
+  var hid=settings().hidden;
+  return HISTO.slides.concat(customSlides()).filter(function(s){return !hid[s.id]});
+}
+function slideById(id){
+  return HISTO.slides.concat(customSlides()).filter(function(s){return s.id===id})[0];
+}
+function term(k){return HISTO.glossary[k]||null}
+function loadHisto(){
+  return fetch('histology.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null})
+    .then(function(j){ if(j){HISTO=j;histoReady=true;renderHistoHome();var r=currentRoute()[0];if(r==='histosection'||r==='slide'||r==='histoquiz'||r==='histology')route();} })
+    .catch(function(){});
+}
+function sectionName(id){
+  var s=HISTO.sections.filter(function(x){return x.id===id})[0];
+  return s?s.name:(id||'Other');
+}
+function sectionList(){
+  var ids={};allSlides().forEach(function(s){ids[s.section]=1});
+  var out=HISTO.sections.filter(function(s){return ids[s.id]});
+  Object.keys(ids).forEach(function(k){ if(!out.filter(function(s){return s.id===k}).length) out.push({id:k,name:sectionName(k)}); });
+  return out;
+}
+
+/* ---- atlas home ---- */
+function renderHistoHome(){
+  var box=$('#histosections'); if(!box)return;
+  if(!histoReady&&!customSlides().length){box.innerHTML='<div class="empty">Loading the slide box&hellip; if this stays empty, make sure <code>histology.json</code> and the <code>histology</code> folder are next to index.html.</div>';return;}
+  var secs=sectionList();
+  box.innerHTML=secs.map(function(s){
+    var n=allSlides().filter(function(x){return x.section===s.id}).length;
+    return '<a class="card" href="#/histology/'+encodeURIComponent(s.id)+'"><h3>'+esc(s.name)+'</h3>'+
+      '<p>'+n+' slide'+(n===1?'':'s')+'</p></a>';
+  }).join('');
+}
+function renderHistoSection(secId){
+  var box=$('#histogrid'),head=$('#histosecname');
+  var list=allSlides().filter(function(s){return s.section===secId});
+  if(head)head.textContent=sectionName(secId);
+  if(!box)return;
+  if(!list.length){box.innerHTML='<div class="empty">No slides in this section yet.</div>';return;}
+  box.innerHTML=list.map(function(s){
+    return '<a class="thumb" href="#/slide/'+encodeURIComponent(s.id)+'">'+
+      '<img src="'+esc(s.file)+'" alt="'+esc(s.title)+'" loading="lazy">'+
+      '<span>'+esc(s.title)+(s.hotspots&&s.hotspots.length?' <i class="statepill">'+s.hotspots.length+' labels</i>':'')+'</span></a>';
+  }).join('');
+}
+
+/* ---- slide viewer with hotspots ---- */
+var curSlide=null;
+function renderSlide(id){
+  var s=slideById(id); curSlide=s;
+  var wrap=$('#slideview'); if(!wrap)return;
+  if(!s){wrap.innerHTML='<div class="empty">Slide not found.</div>';return;}
+  var sib=allSlides().filter(function(x){return x.section===s.section});
+  var idx=sib.map(function(x){return x.id}).indexOf(s.id);
+  var prev=idx>0?sib[idx-1]:null, next=idx<sib.length-1?sib[idx+1]:null;
+  wrap.innerHTML=
+    '<div class="slidehead"><a class="btn ghost small" href="#/histology/'+encodeURIComponent(s.section)+'">&larr; '+esc(sectionName(s.section))+'</a>'+
+      '<span class="spacer"></span>'+
+      (prev?'<a class="btn ghost small" href="#/slide/'+encodeURIComponent(prev.id)+'">Previous</a>':'')+
+      (next?'<a class="btn ghost small" href="#/slide/'+encodeURIComponent(next.id)+'">Next slide</a>':'')+'</div>'+
+    '<h2>'+esc(s.title)+'</h2><p class="muted">'+esc(s.desc||'')+'</p>'+
+    '<div class="slidewrap"><div class="slidebox" id="slidebox">'+
+      '<img id="slideimg" src="'+esc(s.file)+'" alt="'+esc(s.title)+'">'+
+      (s.hotspots||[]).map(function(h,i){
+        return '<button class="hot" data-i="'+i+'" style="left:'+h.x+'%;top:'+h.y+'%" title="'+esc(h.label)+'">'+
+          '<span class="dot"></span><span class="hlab">'+esc(h.label)+'</span></button>';
+      }).join('')+
+    '</div>'+
+    '<div class="slideinfo" id="slideinfo">'+
+      (s.hotspots&&s.hotspots.length?'<p class="muted">Hover a marker to see its name, click it for the full explanation.</p>'
+        :'<p class="muted">This slide has no markers yet. The structure it demonstrates is explained below; markers can be added from the Admin panel.</p>')+
+      infoCard(s.term,s.info)+
+    '</div></div>'+
+    ((s.hotspots||[]).length?'<div class="chiprow" id="hotlist">'+s.hotspots.map(function(h,i){
+        return '<button class="chip filter" data-i="'+i+'">'+esc(h.label)+'</button>';}).join('')+'</div>':'');
+  var box=$('#slidebox');
+  function showHot(i){
+    var h=s.hotspots[i];
+    $$('#slidebox .hot').forEach(function(b,j){b.classList.toggle('on',j===i)});
+    $$('#hotlist .chip').forEach(function(b,j){b.classList.toggle('on',j===i)});
+    $('#slideinfo').innerHTML='<h3 style="margin-top:0">'+esc(h.label)+'</h3>'+infoCard(h.term,h.info);
+  }
+  $$('#slidebox .hot').forEach(function(b){
+    b.addEventListener('click',function(){showHot(parseInt(b.getAttribute('data-i'),10))});
+  });
+  $$('#hotlist .chip').forEach(function(b){
+    b.addEventListener('click',function(){
+      var i=parseInt(b.getAttribute('data-i'),10);showHot(i);
+      var hb=$$('#slidebox .hot')[i]; if(hb)hb.scrollIntoView({block:'nearest'});
+    });
+  });
+}
+function infoCard(key,inline){
+  var t=term(key);
+  if(!t&&inline)return '<div class="box key"><p>'+esc(inline)+'</p></div>';
+  if(!t)return '';
+  return '<div class="box key"><h4 style="margin:0 0 6px">'+esc(t.name)+'</h4>'+
+    '<p><b>What it is:</b> '+esc(t.what)+'</p>'+
+    '<p><b>Where it is found:</b> '+esc(t.where)+'</p>'+
+    '<p style="margin:0"><b>Function:</b> '+esc(t.fn)+'</p></div>';
+}
+
+/* ---- histology quiz ---- */
+function renderHistoQuizSetup(){
+  var box=$('#hqsections'); if(!box)return;
+  var secs=sectionList();
+  if(!secs.length){box.innerHTML='<div class="empty">No slides available yet.</div>';return;}
+  box.innerHTML=secs.map(function(s){
+    var on=histoSel[s.id]!==false;
+    return '<label><input type="checkbox" data-sec="'+esc(s.id)+'"'+(on?' checked':'')+'><span>'+esc(s.name)+'</span></label>';
+  }).join('');
+  box.onchange=function(e){
+    var k=e.target.getAttribute&&e.target.getAttribute('data-sec');
+    if(k)histoSel[k]=e.target.checked;
+  };
+}
+function hqPool(){
+  return allSlides().filter(function(s){return histoSel[s.section]!==false});
+}
+function hqNext(){
+  var pool=hqPool();
+  if(!pool.length){$('#hqbody').innerHTML='<div class="empty">Choose at least one section.</div>';return;}
+  var withHot=pool.filter(function(s){return (s.hotspots||[]).length});
+  var useHot=withHot.length&&Math.random()<0.65;
+  var s=(useHot?withHot:pool)[Math.floor(Math.random()*(useHot?withHot.length:pool.length))];
+  var h=useHot?s.hotspots[Math.floor(Math.random()*s.hotspots.length)]:null;
+  var key=h?h.term:s.term, label=h?h.label:null;
+  var t=term(key);
+  var correct=t?t.name:(label||s.title);
+  var others=[],seen={};
+  seen[correct]=1;
+  pool.forEach(function(p){
+    (p.hotspots||[]).forEach(function(x){var tt=term(x.term);var n=tt?tt.name:x.label;if(n&&!seen[n]){seen[n]=1;others.push(n)}});
+    var pt=term(p.term); if(pt&&!seen[pt.name]){seen[pt.name]=1;others.push(pt.name)}
+  });
+  others.sort(function(){return Math.random()-0.5});
+  var opts=[correct].concat(others.slice(0,3));
+  opts.sort(function(){return Math.random()-0.5});
+  histoQ={slide:s,hot:h,correct:correct,opts:opts,t:t};
+  var zoom=h?('--fx:'+h.x+'%;--fy:'+h.y+'%'):'';
+  $('#hqbody').innerHTML=
+    '<div class="slidebox quiz" style="'+zoom+'">'+
+      '<img src="'+esc(s.file)+'" alt="slide">'+
+      (h?'<span class="hot on ring" style="left:'+h.x+'%;top:'+h.y+'%"><span class="dot"></span></span>':'')+
+    '</div>'+
+    '<p class="qtextq">'+(h?'What is the highlighted structure?':'What does this slide show?')+'</p>'+
+    '<div class="opts" id="hqopts">'+opts.map(function(o,i){
+      return '<button class="opt" data-o="'+i+'"><span class="k">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>'+
+    '<div id="hqfb"></div>';
+  $$('#hqopts .opt').forEach(function(b){
+    b.addEventListener('click',function(){hqAnswer(parseInt(b.getAttribute('data-o'),10))});
+  });
+}
+var hqScore={n:0,r:0};
+function hqAnswer(i){
+  var q=histoQ; if(!q||q.done)return; q.done=true;
+  var ok=q.opts[i]===q.correct;
+  hqScore.n++; if(ok)hqScore.r++;
+  $$('#hqopts .opt').forEach(function(b,j){
+    if(q.opts[j]===q.correct)b.classList.add('right');
+    else if(j===i)b.classList.add('wrong');
+    b.classList.add('locked');
+  });
+  $('#hqscore').textContent=hqScore.r+' / '+hqScore.n+' correct';
+  $('#hqfb').innerHTML='<div class="exp"><b>'+(ok?'Correct':'Not quite')+' &mdash; '+esc(q.correct)+'.</b> '+
+    (q.t?esc(q.t.what)+' <b>Where:</b> '+esc(q.t.where)+' <b>Function:</b> '+esc(q.t.fn):esc(q.slide.desc||''))+
+    '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">'+
+    '<a class="btn ghost small" href="#/slide/'+encodeURIComponent(q.slide.id)+'">Open this slide</a>'+
+    '<button class="btn primary small" id="hqnext">Next question</button></div></div>';
+  $('#hqnext').onclick=hqNext;
+}
+
+/* ================= PHYSIOLOGY ANIMATIONS ================= */
+var ANIMS=[
+ {id:'ap',name:'Action potential',blurb:'Threshold, the Na\u207a upstroke, the K\u207a repolarization, hyperpolarization and the refractory periods, traced on the membrane potential curve.'},
+ {id:'pump',name:'Na\u207a/K\u207a ATPase',blurb:'The pump cycle: 3 Na\u207a out, 2 K\u207a in, one ATP per turn, and why that makes the inside of the cell negative.'},
+ {id:'synapse',name:'Synaptic transmission',blurb:'Action potential arrives, Ca\u00b2\u207a enters, vesicles fuse, transmitter crosses the cleft, receptors open and the signal is terminated.'},
+ {id:'heart',name:'Cardiac conduction',blurb:'SA node \u2192 atria \u2192 AV node delay \u2192 bundle of His \u2192 bundle branches \u2192 Purkinje fibres, drawn against the ECG.'},
+ {id:'sliding',name:'Excitation\u2013contraction coupling',blurb:'T tubule depolarizes, the SR releases Ca\u00b2\u207a, troponin moves tropomyosin, and the cross-bridge cycle pulls the thin filaments toward the M line.'}
+];
+var anim={id:null,t:0,playing:true,raf:null,speed:1};
+function renderPhysHome(){
+  var box=$('#physlist'); if(!box)return;
+  box.innerHTML=ANIMS.map(function(a){
+    return '<a class="card" href="#/physiology/'+a.id+'"><h3>'+esc(a.name)+'</h3><p>'+esc(a.blurb)+'</p></a>';
+  }).join('');
+}
+function openAnim(id){
+  var a=ANIMS.filter(function(x){return x.id===id})[0]||ANIMS[0];
+  anim.id=a.id;anim.t=0;anim.playing=true;anim.speed=1;
+  $('#animtitle').textContent=a.name;
+  $('#animblurb').textContent=a.blurb;
+  $('#animstage').innerHTML=animSVG(a.id);
+  if(anim.raf)cancelAnimationFrame(anim.raf);
+  var last=performance.now();
+  function loop(now){
+    var dt=(now-last)/1000;last=now;
+    if(anim.playing)anim.t+=dt*anim.speed;
+    animDraw(anim.id,anim.t%animDur(anim.id));
+    anim.raf=requestAnimationFrame(loop);
+  }
+  anim.raf=requestAnimationFrame(loop);
+}
+function stopAnim(){if(anim.raf){cancelAnimationFrame(anim.raf);anim.raf=null}}
+function animDur(id){return {ap:6,pump:8,synapse:8,heart:6,sliding:6}[id]||6}
+function animSVG(id){
+  if(id==='ap')return '<svg viewBox="0 0 720 320" id="asvg">'+
+    '<line x1="60" y1="250" x2="700" y2="250" class="ax"/><line x1="60" y1="20" x2="60" y2="290" class="ax"/>'+
+    '<text x="24" y="60" class="al">+40</text><text x="24" y="190" class="al">\u221270</text><text x="24" y="226" class="al">\u221290</text>'+
+    '<text x="380" y="286" class="al" text-anchor="middle">time (ms)</text>'+
+    '<line x1="60" y1="176" x2="700" y2="176" class="dash"/><text x="608" y="170" class="al">threshold \u221255 mV</text>'+
+    '<path id="apcurve" class="curve" d=""/><circle id="apdot" class="dot2" r="6" cx="60" cy="190"/>'+
+    '<rect x="100" y="24" width="520" height="26" rx="13" class="panel2"/><text id="apphase" x="360" y="42" class="phase" text-anchor="middle">Resting</text>'+
+    '<g id="apchan"></g></svg>';
+  if(id==='pump')return '<svg viewBox="0 0 720 320" id="asvg">'+
+    '<rect x="0" y="130" width="720" height="60" class="memb2"/>'+
+    '<text x="20" y="40" class="al">OUTSIDE  (high Na\u207a, low K\u207a)</text><text x="20" y="300" class="al">INSIDE  (low Na\u207a, high K\u207a, negative)</text>'+
+    '<g id="pumpbody"><rect x="300" y="118" width="120" height="84" rx="16" class="prot"/>'+
+    '<text x="360" y="166" class="plab" text-anchor="middle">Na\u207a/K\u207a ATPase</text></g>'+
+    '<g id="pumpions"></g>'+
+    '<rect x="100" y="12" width="520" height="26" rx="13" class="panel2"/><text id="pumpphase" x="360" y="30" class="phase" text-anchor="middle"></text></svg>';
+  if(id==='synapse')return '<svg viewBox="0 0 720 320" id="asvg">'+
+    '<path d="M40 30 L300 30 Q420 30 420 120 L420 150 L140 150 Q40 150 40 70 Z" class="term"/>'+
+    '<rect x="60" y="200" width="620" height="70" rx="10" class="post"/>'+
+    '<text x="70" y="60" class="al">axon terminal</text><text x="70" y="250" class="al">postsynaptic membrane</text>'+
+    '<text x="470" y="185" class="al">synaptic cleft</text>'+
+    '<g id="syn"></g>'+
+    '<rect x="100" y="286" width="520" height="26" rx="13" class="panel2"/><text id="synphase" x="360" y="304" class="phase" text-anchor="middle"></text></svg>';
+  if(id==='heart')return '<svg viewBox="0 0 720 320" id="asvg">'+
+    '<path d="M210 40 Q120 40 110 130 Q100 240 240 290 Q380 240 370 130 Q360 40 270 40 Z" class="heart"/>'+
+    '<line x1="240" y1="40" x2="240" y2="290" class="septum"/>'+
+    '<circle id="h_sa" cx="285" cy="80" r="12" class="node"/><text x="305" y="78" class="al">SA node</text>'+
+    '<circle id="h_av" cx="243" cy="150" r="11" class="node"/><text x="258" y="146" class="al">AV node</text>'+
+    '<path id="h_his" d="M243 160 L243 200" class="tract"/><text x="252" y="196" class="al">bundle of His</text>'+
+    '<path id="h_lb" d="M243 200 L180 250" class="tract"/><path id="h_rb" d="M243 200 L300 250" class="tract"/>'+
+    '<path id="h_pk" d="M180 250 Q150 280 200 288 M300 250 Q330 280 280 288" class="tract"/>'+
+    '<text x="150" y="276" class="al">Purkinje</text>'+
+    '<line x1="420" y1="200" x2="700" y2="200" class="ax"/><path id="ecg" class="curve" d=""/>'+
+    '<text x="560" y="232" class="al" text-anchor="middle">ECG</text>'+
+    '<rect x="400" y="30" width="300" height="26" rx="13" class="panel2"/><text id="heartphase" x="550" y="48" class="phase" text-anchor="middle"></text></svg>';
+  return '<svg viewBox="0 0 720 320" id="asvg">'+
+    '<g id="sarc"></g>'+
+    '<rect x="100" y="286" width="520" height="26" rx="13" class="panel2"/><text id="slphase" x="360" y="304" class="phase" text-anchor="middle"></text></svg>';
+}
+function el(id){return document.getElementById(id)}
+function animDraw(id,t){
+  if(id==='ap')return drawAP(t);
+  if(id==='pump')return drawPump(t);
+  if(id==='synapse')return drawSyn(t);
+  if(id==='heart')return drawHeart(t);
+  return drawSliding(t);
+}
+function apV(ms){ /* membrane potential in mV at time ms (0-6000 scaled) */
+  var x=ms;
+  if(x<1.2)return -70;
+  if(x<1.6)return -70+(x-1.2)/0.4*15;           /* graded depolarization to threshold */
+  if(x<2.1)return -55+(x-1.6)/0.5*95;           /* Na+ upstroke to +40 */
+  if(x<3.0)return 40-(x-2.1)/0.9*110;           /* K+ repolarization */
+  if(x<3.8)return -70-(x-3.0)/0.8*15;           /* hyperpolarization */
+  if(x<4.6)return -85+(x-3.8)/0.8*15;           /* pump restores resting */
+  return -70;
+}
+function apPhase(x){
+  if(x<1.2)return 'Resting: K\u207a leak sets \u221270 mV, Na\u207a channels closed';
+  if(x<1.6)return 'Stimulus: graded depolarization toward threshold (\u221255 mV)';
+  if(x<2.1)return 'Upstroke: voltage-gated Na\u207a channels open, Na\u207a rushes in';
+  if(x<3.0)return 'Repolarization: Na\u207a channels inactivate, K\u207a channels open \u2014 absolute refractory';
+  if(x<3.8)return 'Hyperpolarization: slow K\u207a channels still open \u2014 relative refractory';
+  if(x<4.6)return 'Na\u207a/K\u207a pump restores the gradients';
+  return 'Back to rest, ready to fire again';
+}
+function drawAP(t){
+  var W=640,X0=60,Y=function(v){return 250-(v+90)*(230/130)};
+  var d='',n=160, tmax=t;
+  for(var i=0;i<=n;i++){
+    var x=tmax*i/n; if(x>6)break;
+    var px=X0+x/6*W, py=Y(apV(x));
+    d+=(i?'L':'M')+px.toFixed(1)+' '+py.toFixed(1);
+  }
+  var c=el('apcurve'); if(!c)return;
+  c.setAttribute('d',d);
+  var dot=el('apdot');dot.setAttribute('cx',X0+t/6*W);dot.setAttribute('cy',Y(apV(t)));
+  el('apphase').textContent=apPhase(t);
+  var g=el('apchan');
+  var na=(t>=1.6&&t<2.4), k=(t>=2.0&&t<3.8);
+  g.innerHTML='<text x="80" y="300" class="al" fill="'+(na?'#B3261E':'#999')+'">Na\u207a channels '+(na?'OPEN':'closed')+'</text>'+
+   '<text x="260" y="300" class="al" fill="'+(k?'#1F5FA8':'#999')+'">K\u207a channels '+(k?'OPEN':'closed')+'</text>';
+}
+function drawPump(t){
+  var g=el('pumpions'); if(!g)return;
+  var ph=t%8, s='';
+  function ion(x,y,txt,cls){return '<g><circle cx="'+x+'" cy="'+y+'" r="13" class="'+cls+'"/><text x="'+x+'" y="'+(y+4)+'" class="ionl" text-anchor="middle">'+txt+'</text></g>'}
+  var phase='';
+  if(ph<2){ var p=ph/2; phase='1. Three Na\u207a from the cytosol bind the pump';
+    [0,1,2].forEach(function(i){ s+=ion(320+i*30, 280-p*70, 'Na\u207a','na'); }); }
+  else if(ph<3.5){ var p=(ph-2)/1.5; phase='2. ATP is hydrolysed, the pump is phosphorylated and changes shape';
+    [0,1,2].forEach(function(i){ s+=ion(320+i*30, 210-p*20,'Na\u207a','na'); });
+    s+='<text x="470" y="150" class="al">ATP \u2192 ADP + P\u1d62</text>'; }
+  else if(ph<5){ var p=(ph-3.5)/1.5; phase='3. Three Na\u207a are released outside';
+    [0,1,2].forEach(function(i){ s+=ion(320+i*30, 120-p*70,'Na\u207a','na'); }); }
+  else if(ph<6.5){ var p=(ph-5)/1.5; phase='4. Two K\u207a bind from outside and the phosphate comes off';
+    [0,1].forEach(function(i){ s+=ion(340+i*34, 60+p*70,'K\u207a','k'); }); }
+  else { var p=(ph-6.5)/1.5; phase='5. Two K\u207a are released inside \u2014 3 out, 2 in, so the cell loses charge';
+    [0,1].forEach(function(i){ s+=ion(340+i*34, 200+p*80,'K\u207a','k'); }); }
+  g.innerHTML=s;
+  el('pumpphase').textContent=phase;
+}
+function drawSyn(t){
+  var g=el('syn'); if(!g)return;
+  var ph=t%8,s='',phase='';
+  if(ph<1.5){ phase='1. The action potential arrives at the axon terminal';
+    var x=40+ph/1.5*300; s+='<circle cx="'+x+'" cy="90" r="14" class="spark"/><text x="'+x+'" y="95" class="ionl" text-anchor="middle">AP</text>'; }
+  else if(ph<3){ var p=(ph-1.5)/1.5; phase='2. Voltage-gated Ca\u00b2\u207a channels open and Ca\u00b2\u207a enters';
+    [0,1,2].forEach(function(i){ s+='<circle cx="'+(300+i*40)+'" cy="'+(190-p*60)+'" r="11" class="ca"/><text x="'+(300+i*40)+'" y="'+(194-p*60)+'" class="ionl" text-anchor="middle">Ca</text>'; }); }
+  else if(ph<4.5){ var p=(ph-3)/1.5; phase='3. Vesicles fuse with the membrane and release transmitter by exocytosis';
+    for(var i=0;i<4;i++){ s+='<circle cx="'+(140+i*60)+'" cy="'+(120+p*25)+'" r="'+(14-p*6)+'" class="ves"/>'; } }
+  else if(ph<6){ var p=(ph-4.5)/1.5; phase='4. Transmitter diffuses across the cleft and binds receptors';
+    for(var i=0;i<8;i++){ var ox=120+i*55; s+='<circle cx="'+ox+'" cy="'+(160+p*45)+'" r="6" class="nt"/>'; } }
+  else if(ph<7){ phase='5. Receptor channels open, ions flow and the postsynaptic membrane depolarizes';
+    s+='<rect x="60" y="200" width="620" height="70" rx="10" class="post on"/>';
+    for(var i=0;i<8;i++){ s+='<circle cx="'+(120+i*55)+'" cy="208" r="6" class="nt"/>'; } }
+  else { phase='6. Transmitter is broken down or taken back up \u2014 the signal is switched off';
+    for(var i=0;i<4;i++){ s+='<circle cx="'+(140+i*90)+'" cy="'+(205-(ph-7)*40)+'" r="5" class="nt fade"/>'; } }
+  g.innerHTML=s;
+  el('synphase').textContent=phase;
+}
+function drawHeart(t){
+  var ph=t%6;
+  var parts={h_sa:[0,0.9],h_av:[1.1,2.4],h_his:[2.4,2.9],h_lb:[2.9,3.4],h_rb:[2.9,3.4],h_pk:[3.4,4.4]};
+  Object.keys(parts).forEach(function(k){
+    var e=el(k); if(!e)return;
+    var on=ph>=parts[k][0]&&ph<parts[k][1];
+    e.classList.toggle('lit',on);
+  });
+  var phase = ph<0.9?'SA node fires \u2014 the pacemaker sets the rate':
+              ph<1.1?'Impulse spreads across both atria \u2014 the P wave':
+              ph<2.4?'AV node delay \u2014 lets the atria finish emptying':
+              ph<2.9?'Bundle of His carries it into the septum':
+              ph<3.4?'Right and left bundle branches':
+              ph<4.4?'Purkinje fibres \u2014 ventricles contract from the apex up (QRS)':
+                     'Ventricular repolarization \u2014 the T wave';
+  el('heartphase').textContent=phase;
+  var d='',X0=420,W=280;
+  for(var i=0;i<=120;i++){
+    var x=ph*i/120; if(x>6)break;
+    var y=200-ecgV(x)*55;
+    d+=(i?'L':'M')+(X0+x/6*W).toFixed(1)+' '+y.toFixed(1);
+  }
+  el('ecg').setAttribute('d',d);
+}
+function ecgV(x){
+  if(x<0.6)return 0;
+  if(x<1.1)return Math.sin((x-0.6)/0.5*Math.PI)*0.35;      /* P */
+  if(x<2.6)return 0;
+  if(x<2.75)return -(x-2.6)/0.15*0.25;                      /* Q */
+  if(x<2.95)return -0.25+(x-2.75)/0.2*1.45;                 /* R */
+  if(x<3.15)return 1.2-(x-2.95)/0.2*1.6;                    /* S */
+  if(x<3.35)return -0.4+(x-3.15)/0.2*0.4;
+  if(x<3.9)return 0;
+  if(x<4.6)return Math.sin((x-3.9)/0.7*Math.PI)*0.45;       /* T */
+  return 0;
+}
+function drawSliding(t){
+  var g=el('sarc'); if(!g)return;
+  var ph=t%6, shorten = ph<1.5?0 : ph<4?(ph-1.5)/2.5 : 1-(ph-4)/2;
+  shorten=Math.max(0,Math.min(1,shorten));
+  var z1=120-shorten*0, z2=600-shorten*140, mid=(z1+z2)/2;
+  var s='';
+  s+='<line x1="'+z1+'" y1="70" x2="'+z1+'" y2="210" class="zd"/><line x1="'+z2+'" y1="70" x2="'+z2+'" y2="210" class="zd"/>';
+  s+='<text x="'+z1+'" y="60" class="al" text-anchor="middle">Z disc</text><text x="'+z2+'" y="60" class="al" text-anchor="middle">Z disc</text>';
+  s+='<line x1="'+mid+'" y1="80" x2="'+mid+'" y2="200" class="ml"/><text x="'+mid+'" y="232" class="al" text-anchor="middle">M line</text>';
+  [100,140,180].forEach(function(y){
+    s+='<line x1="'+(mid-95)+'" y1="'+y+'" x2="'+(mid+95)+'" y2="'+y+'" class="thick"/>';
+    s+='<line x1="'+z1+'" y1="'+(y+8)+'" x2="'+(mid-20-(1-shorten)*40)+'" y2="'+(y+8)+'" class="thin"/>';
+    s+='<line x1="'+z2+'" y1="'+(y+8)+'" x2="'+(mid+20+(1-shorten)*40)+'" y2="'+(y+8)+'" class="thin"/>';
+  });
+  var phase = ph<0.7?'T tubule carries the action potential into the fibre':
+              ph<1.5?'Sarcoplasmic reticulum releases Ca\u00b2\u207a':
+              ph<2.2?'Ca\u00b2\u207a binds troponin C; tropomyosin moves off the actin sites':
+              ph<4?'Cross-bridge cycle: heads bind, pivot toward the M line, detach when new ATP binds':
+              ph<4.6?'Ca\u00b2\u207a is pumped back into the SR':
+                     'Relaxation: thin filaments slide back, I band and H zone widen again';
+  s+='<text x="360" y="268" class="al" text-anchor="middle">A band stays the same length \u00b7 I band and H zone narrow as the Z discs come closer</text>';
+  g.innerHTML=s;
+  el('slphase').textContent=phase;
+}
+
+/* ================= CONCEPT QUIZZES ================= */
+var BIOQ=[
+ ["Which enzyme catalyses the rate-limiting step of glycolysis?",["Phosphofructokinase-1","Hexokinase","Pyruvate kinase","Glucose 6-phosphatase"],0,"PFK-1 converts fructose 6-P to fructose 1,6-BP. It is both the committed and the rate-limiting step, activated by AMP and fructose 2,6-BP and inhibited by ATP and citrate."],
+ ["Pyruvate carboxylase requires which cofactor, and where does it work?",["Biotin, in the mitochondrial matrix","Thiamine pyrophosphate, in the cytosol","Biotin, in the cytosol","Lipoic acid, in the mitochondrial matrix"],0,"Biotin is bound to a lysine of the enzyme and ATP drives carboxylation. It works in the matrix of liver and kidney cells, both to start gluconeogenesis and to refill TCA intermediates."],
+ ["Which step of gluconeogenesis uses GTP?",["PEP carboxykinase","Pyruvate carboxylase","Fructose 1,6-bisphosphatase","Glucose 6-phosphatase"],0,"PEPCK decarboxylates and phosphorylates oxaloacetate to PEP using GTP; its gene is induced by glucagon and cortisol through CREB."],
+ ["High glucagon lowers hepatic fructose 2,6-bisphosphate. What follows?",["PFK-1 is inhibited and fructose 1,6-bisphosphatase is released, so gluconeogenesis wins","PFK-1 is activated and glycolysis wins","Both PFK-1 and FBPase-1 are inhibited, so flux stops","Glucokinase is released from GKRP and glycolysis wins"],0,"PKA phosphorylates the bifunctional PFK-2/FBP-2 enzyme; the phosphatase domain dominates, F2,6-BP falls, and the reciprocal switch favours glucose synthesis."],
+ ["Which enzyme is deficient in von Gierke disease (GSD Ia)?",["Glucose 6-phosphatase","Lysosomal acid \u03b1-glucosidase","Debranching enzyme","Glycogen phosphorylase"],0,"Because glucose 6-phosphatase is the final step of both glycogenolysis and gluconeogenesis, losing it blocks both routes to blood glucose and causes severe fasting hypoglycaemia."],
+ ["Glycogen phosphorylase requires which coenzyme?",["Pyridoxal phosphate (vitamin B\u2086)","Thiamine pyrophosphate","Biotin","FAD"],0,"It cleaves \u03b1(1\u21924) bonds by phosphorolysis, giving glucose 1-phosphate and saving the cell the ATP that would be needed to phosphorylate free glucose."],
+ ["What does the debranching enzyme release as free glucose?",["The last residue at the \u03b1(1\u21926) branch point","Every residue of the outer chain","Glucose 1-phosphate from the non-reducing end","Glucose 6-phosphate from the limit dextrin"],0,"Its 4:4 transferase moves three residues to another chain, then the \u03b1(1\u21926)-glucosidase hydrolyses the branch residue off as free glucose, about 8\u201310% of the yield."],
+ ["Phosphorylation of glycogen synthase and glycogen phosphorylase does what?",["Inactivates the synthase and activates the phosphorylase","Activates both","Inactivates both","Activates the synthase and inactivates the phosphorylase"],0,"One covalent signal switches the two pathways in opposite directions. PP1 reverses both, and cAMP also blocks PP1 so the phosphorylated state is held."],
+ ["Which signal lets exercising muscle break down glycogen with no hormone at all?",["AMP activating phosphorylase b, and Ca\u00b2\u207a\u2013calmodulin activating phosphorylase kinase","Glucose 6-phosphate activating phosphorylase b","Insulin activating PP1","ATP activating phosphorylase kinase"],0,"Ca\u00b2\u207a\u2013calmodulin is the \u03b4 subunit of phosphorylase kinase, so the Ca\u00b2\u207a released for contraction turns on glycogenolysis directly; AMP does the same when ATP falls."],
+ ["Only one aldolase isozyme cleaves fructose 1-phosphate. Which, and what disease follows its loss?",["Aldolase B \u2014 hereditary fructose intolerance","Aldolase A \u2014 essential fructosuria","Aldolase C \u2014 classic galactosemia","Aldolase B \u2014 essential fructosuria"],0,"Fructose 1-P accumulates, inorganic phosphate falls, AMP is degraded (hyperuricaemia) and hepatic ATP drops, blocking gluconeogenesis and protein synthesis."],
+ ["Classic galactosemia is a deficiency of which enzyme?",["Galactose 1-phosphate uridylyltransferase (GALT)","Galactokinase (GALK)","UDP-hexose 4-epimerase (GALE)","Aldose reductase"],0,"Galactose 1-phosphate and galactitol accumulate and damage liver, brain and lens. It is on the newborn screen; treatment is removal of galactose and lactose."],
+ ["Why does hyperglycaemia damage lens, retina, nerve and kidney through the polyol pathway?",["They take up glucose without insulin and have little sorbitol dehydrogenase, so sorbitol is trapped","They lack aldose reductase, so glucose accumulates directly","They convert sorbitol to glucose, raising intracellular osmolarity","They cannot make NADPH, so glutathione falls"],0,"Aldose reductase keeps making sorbitol, which cannot leave the cell; water follows, and the swelling contributes to cataracts, neuropathy, nephropathy and retinopathy."],
+ ["Which step is the committed, rate-limiting and only regulated step of the pentose phosphate pathway?",["Glucose 6-phosphate dehydrogenase","6-Phosphogluconate dehydrogenase","Transketolase","Ribulose 5-phosphate 3-epimerase"],0,"G6PD is competitively inhibited by NADPH, so the pathway idles until the NADPH/NADP\u207a ratio falls."],
+ ["What does the pentose phosphate pathway produce?",["NADPH and ribose 5-phosphate, with no ATP","NADH and ribose 5-phosphate, with 2 ATP","NADPH and ATP","FADH\u2082 and ribose 5-phosphate"],0,"The oxidative phase makes two NADPH and releases carbon 1 of glucose as CO\u2082; no ATP is used or made anywhere in the pathway."],
+ ["In G6PD deficiency, why are red cells hit hardest?",["The pentose phosphate pathway is their only source of NADPH and they cannot make new enzyme","They contain the most G6PD of any cell","They cannot use glutathione","They rely on NADPH for ATP production"],0,"Without NADPH, glutathione cannot be kept reduced, peroxides damage the membrane, haemoglobin precipitates as Heinz bodies and the spleen removes the cells."],
+ ["Which three agents classically trigger haemolysis in G6PD deficiency?",["Infection, oxidant drugs (the AAAs) and fava beans","Alcohol, aspirin and fasting","Iron supplements, sulfur and exercise","Cold, dehydration and high altitude"],0,"Infection is the most common trigger. The AAAs are antibiotics, antimalarials and antipyretics; favism occurs with some variants such as the Mediterranean form."],
+ ["Which GAG is unsulfated and not attached to a core protein?",["Hyaluronic acid","Heparin","Dermatan sulfate","Keratan sulfate"],0,"All the other GAGs are sulfated and bound to a core protein. Proteoglycan monomers attach to a long hyaluronic acid molecule with link proteins to form an aggregate."],
+ ["What is the last step in the synthesis of a GAG chain, and which donor does it use?",["Sulfation, using PAPS","Epimerization, using UDP-xylose","Acetylation, using acetyl CoA","Phosphorylation, using ATP"],0,"Sulfotransferases add sulfate from PAPS after the sugar is already in the chain; the negative charge is what makes GAGs hold water."],
+ ["Mannose 6-phosphate on an enzyme is a signal for what?",["Delivery to the lysosome","Secretion from the cell","Insertion into the plasma membrane","Degradation in the proteasome"],0,"Golgi receptors read the tag. If the phosphotransferase fails, the enzymes are secreted instead \u2014 I-cell disease."],
+ ["N-linked glycosylation begins on which carrier, and the chain is transferred to which residue?",["Dolichol pyrophosphate; the amide nitrogen of asparagine","Dolichol pyrophosphate; the hydroxyl of serine","UDP-GlcNAc; the amide nitrogen of asparagine","PAPS; the hydroxyl of threonine"],0,"A 14-sugar block is built on dolichol in the RER and moved onto asparagine, then trimmed into complex or high-mannose forms. O-linked chains start with GalNAc on Ser or Thr in the Golgi."],
+ ["Which glycogen store can raise blood glucose, and why?",["Liver, because it has glucose 6-phosphatase","Muscle, because it is the larger store","Both equally","Neither; only gluconeogenesis can"],0,"Muscle lacks glucose 6-phosphatase, so its glucose 6-phosphate must stay in the cell and enter glycolysis."],
+ ["What makes the UDP-glucose pyrophosphorylase step effectively irreversible?",["Pyrophosphate is hydrolysed to two phosphates","It consumes two ATP","It is coupled to NADH oxidation","Its product is immediately phosphorylated"],0,"The reaction itself is reversible; pyrophosphatase pulls it forward by destroying one of the products."],
+ ["Glycogen synthase can only extend an existing chain. What provides the primer?",["Glycogenin, which autoglucosylates","Branching enzyme","Phosphoglucomutase","Debranching enzyme"],0,"Glycogenin is a homodimer that attaches at least four glucose residues from UDP-glucose to itself before glycogen synthase takes over."],
+ ["Which precursor enters gluconeogenesis as dihydroxyacetone phosphate?",["Glycerol","Lactate","Alanine","Acetyl CoA"],0,"Glycerol kinase then glycerol 3-phosphate dehydrogenase convert it to DHAP. Acetyl CoA can never be converted to glucose."],
+ ["Acetyl CoA accumulating during a fast does what to pyruvate metabolism?",["Activates pyruvate carboxylase and inhibits the PDH complex","Activates the PDH complex and inhibits pyruvate carboxylase","Inhibits both","Activates both"],0,"Carbon is pushed toward oxaloacetate and glucose rather than being burned to CO\u2082 \u2014 the same acetyl CoA from \u03b2-oxidation also supplies the ATP and NADH gluconeogenesis needs."]
+];
+var PHYSQ=[
+ ["What sets the resting membrane potential at about \u221270 mV?",["K\u207a leak channels plus the Na\u207a/K\u207a pump","Na\u207a leak channels alone","Voltage-gated Ca\u00b2\u207a channels","Chloride pumps"],0,"The membrane is far more permeable to K\u207a at rest, so the potential sits near the K\u207a equilibrium potential; the pump maintains the gradients and adds a small negative contribution because it moves 3 Na\u207a out for every 2 K\u207a in."],
+ ["The Na\u207a/K\u207a ATPase moves which ions, in what ratio?",["3 Na\u207a out and 2 K\u207a in per ATP","2 Na\u207a out and 3 K\u207a in per ATP","3 K\u207a out and 2 Na\u207a in per ATP","1 Na\u207a out and 1 K\u207a in per ATP"],0,"The unequal exchange is electrogenic: each cycle removes one net positive charge, making the inside slightly more negative."],
+ ["What happens at threshold during an action potential?",["Voltage-gated Na\u207a channels open and depolarization becomes self-reinforcing","K\u207a channels open and the cell repolarizes","The Na\u207a/K\u207a pump reverses","Ca\u00b2\u207a channels close"],0,"Around \u221255 mV enough Na\u207a channels open that Na\u207a entry depolarizes further, opening still more channels \u2014 the all-or-none upstroke."],
+ ["Why is there an absolute refractory period?",["Na\u207a channels are inactivated and cannot reopen until the membrane repolarizes","The Na\u207a/K\u207a pump is temporarily switched off","K\u207a channels are closed","Calcium has not yet been removed"],0,"Inactivation gates close during the upstroke and only reset on repolarization, which also forces the impulse to travel in one direction."],
+ ["Hyperpolarization after an action potential is caused by what?",["Slow voltage-gated K\u207a channels staying open after repolarization","Continued Na\u207a entry","Chloride leaving the cell","The pump stopping"],0,"The extra K\u207a efflux drives the potential below rest, producing the relative refractory period during which a larger than normal stimulus is needed."],
+ ["Myelin speeds conduction because",["The impulse jumps between nodes of Ranvier where the channels are concentrated","Myelin generates its own action potentials","Myelin increases membrane capacitance","Myelin pumps Na\u207a continuously"],0,"Saltatory conduction: insulation reduces current loss between nodes, so depolarization leaps from node to node."],
+ ["At the axon terminal, what directly triggers transmitter release?",["Ca\u00b2\u207a entry through voltage-gated channels","Na\u207a entry","K\u207a efflux","ATP binding to the vesicle"],0,"Depolarization opens Ca\u00b2\u207a channels at the active zones; Ca\u00b2\u207a makes the vesicles fuse with the presynaptic membrane and release transmitter by exocytosis."],
+ ["How is acetylcholine removed from the neuromuscular junction?",["Acetylcholinesterase breaks it down in the cleft","It diffuses away unchanged","It is pumped into the muscle fibre","It is destroyed by the Schwann cell"],0,"Rapid hydrolysis keeps each signal brief; blocking the enzyme prolongs the end plate potential, which is the basis of anticholinesterase drugs."],
+ ["Which event begins excitation\u2013contraction coupling in skeletal muscle?",["Depolarization travels down the T tubule and triggers Ca\u00b2\u207a release from the sarcoplasmic reticulum","Calcium enters from the extracellular fluid through the sarcolemma","Myosin heads bind ATP","Troponin moves tropomyosin without calcium"],0,"The T tubule carries the surface depolarization deep into the fibre so every sarcomere is triggered at once; the SR supplies the Ca\u00b2\u207a."],
+ ["Calcium starts contraction by binding what?",["Troponin C, which moves tropomyosin off the actin sites","Myosin heads directly","Tropomyosin directly","The Z disc"],0,"In smooth muscle the mechanism is different: Ca\u00b2\u207a binds calmodulin, which activates myosin light chain kinase."],
+ ["During the cross-bridge cycle, what causes the myosin head to detach from actin?",["Binding of a new ATP molecule","Release of ADP and phosphate","Hydrolysis of ATP","Binding of calcium"],0,"ATP binding detaches the head; splitting that ATP then re-cocks it into the high-energy position, which is why rigor mortis occurs when ATP is gone."],
+ ["Which band of the sarcomere does NOT change length during contraction?",["The A band","The I band","The H zone","The distance between Z discs"],0,"The A band equals the length of the thick filament. The I band and H zone narrow as the thin filaments slide toward the M line."],
+ ["Which structure is the pacemaker of the heart?",["The sinoatrial node","The atrioventricular node","The bundle of His","Purkinje fibres"],0,"It depolarizes spontaneously fastest and therefore sets the rate; it lies in the right atrial wall near the entry of the superior vena cava."],
+ ["Why is there a delay at the AV node?",["It lets the atria finish emptying before the ventricles contract","It allows the SA node to recharge","It prevents the ECG P wave from overlapping the T wave","It slows the heart rate to 60 per minute"],0,"The delay appears on the ECG as the PR interval."],
+ ["The QRS complex of the ECG corresponds to what?",["Ventricular depolarization spreading through the Purkinje system","Atrial depolarization","Ventricular repolarization","AV node delay"],0,"The P wave is atrial depolarization and the T wave is ventricular repolarization; atrial repolarization is hidden inside the QRS."],
+ ["Gap junctions in intercalated discs matter because",["They electrically couple cardiac cells so the myocardium contracts as a unit","They hold the cells together mechanically","They store calcium","They prevent impulses crossing between cells"],0,"The transverse parts of the disc (desmosomes and fascia adherens) do the mechanical job; the longitudinal gap junctions are electrical synapses."],
+ ["Why can cardiac muscle not be tetanized?",["Its refractory period lasts almost as long as the contraction","It has no sarcoplasmic reticulum","Calcium is removed too slowly","It has no troponin"],0,"The long plateau and refractory period prevent summation, which is essential for a pump that must refill between beats."],
+ ["Smooth muscle contraction is triggered by",["Ca\u00b2\u207a\u2013calmodulin activating myosin light chain kinase","Calcium binding troponin C","Acetylcholine binding nicotinic receptors on the sarcolemma","Depolarization of T tubules"],0,"Smooth muscle has no troponin and no T tubules; caveolae may serve a similar function to T tubules."],
+ ["What makes capillaries the site of exchange rather than arterioles?",["A single endothelial layer with no media and very slow flow","Their thick muscular wall","Their high pressure","Their valves"],0,"Total cross-sectional area is greatest at the capillary bed, so velocity is lowest, and the wall is one cell thick."],
+ ["Which vessel type is the main controller of peripheral resistance?",["Arterioles","Elastic arteries","Capillaries","Large veins"],0,"Smooth muscle tone in the arteriolar media sets resistance and therefore both blood pressure and local flow distribution."]
+];
+var CQ={bio:{bank:BIOQ,score:{n:0,r:0},q:null},phys:{bank:PHYSQ,score:{n:0,r:0},q:null}};
+function cqNext(kind){
+  var C=CQ[kind],b=C.bank;
+  var item=b[Math.floor(Math.random()*b.length)];
+  var opts=item[1].map(function(o,i){return {o:o,ok:i===item[2]}});
+  opts.sort(function(){return Math.random()-0.5});
+  C.q={item:item,opts:opts,done:false};
+  var pre=kind==='bio'?'bq':'pq';
+  $('#'+pre+'body').innerHTML='<p class="qtextq">'+esc(item[0])+'</p>'+
+    '<div class="opts" id="'+pre+'opts">'+opts.map(function(o,i){
+      return '<button class="opt" data-o="'+i+'"><span class="k">'+"ABCDE"[i]+'</span><span>'+esc(o.o)+'</span></button>';}).join('')+
+    '</div><div id="'+pre+'fb"></div>';
+  $$('#'+pre+'opts .opt').forEach(function(btn){
+    btn.addEventListener('click',function(){cqAnswer(kind,parseInt(btn.getAttribute('data-o'),10))});
+  });
+}
+function cqAnswer(kind,i){
+  var C=CQ[kind]; if(!C.q||C.q.done)return; C.q.done=true;
+  var pre=kind==='bio'?'bq':'pq';
+  var ok=C.q.opts[i].ok;
+  C.score.n++; if(ok)C.score.r++;
+  $$('#'+pre+'opts .opt').forEach(function(b,j){
+    if(C.q.opts[j].ok)b.classList.add('right'); else if(j===i)b.classList.add('wrong');
+    b.classList.add('locked');
+  });
+  $('#'+pre+'score').textContent=C.score.r+' / '+C.score.n+' correct';
+  $('#'+pre+'fb').innerHTML='<div class="exp"><b>'+(ok?'Correct':'Not quite')+'.</b> '+esc(C.q.item[3])+
+    '<div style="margin-top:10px"><button class="btn primary small" id="'+pre+'next">Next question</button></div></div>';
+  $('#'+pre+'next').onclick=function(){cqNext(kind)};
+}
+
+/* ================= ADMIN: slides, hotspots, feature switches ================= */
+var slideDraft={hotspots:[]};
+function renderSlideAdmin(){
+  var sel=$('#slsection'); if(!sel)return;
+  if(!sel.options.length){
+    var secs=HISTO.sections.length?HISTO.sections:[{id:'muscle',name:'Muscle tissue'}];
+    sel.innerHTML=secs.map(function(s){return '<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>'}).join('');
+  }
+  var list=$('#slidetoggles');
+  if(list){
+    var hid=settings().hidden;
+    var all=HISTO.slides.concat(customSlides());
+    list.innerHTML=all.length?all.map(function(s){
+      return '<div class="adminrow"><b>'+esc(s.title)+'</b><span class="statepill">'+esc(sectionName(s.section))+'</span>'+
+        '<button class="btn ghost small" data-tog="'+esc(s.id)+'">'+(hid[s.id]?'Show':'Hide')+'</button></div>';
+    }).join(''):'<p class="muted" style="margin:0">No slides loaded.</p>';
+  }
+  var f=settings().features,fb=$('#featureboxes');
+  if(fb)fb.innerHTML=[['histology','Histology tab'],['physiology','Physiology tab'],['bioquiz','Biochemistry concept quiz'],['physioquiz','Physiology concept quiz']]
+    .map(function(p){return '<label><input type="checkbox" data-feat="'+p[0]+'"'+(f[p[0]]!==false?' checked':'')+'><span>'+p[1]+'</span></label>'}).join('');
+}
+function drawDraftHotspots(){
+  var box=$('#hsbox'); if(!box)return;
+  $$('#hsbox .hot').forEach(function(n){n.remove()});
+  slideDraft.hotspots.forEach(function(h,i){
+    var b=document.createElement('button');
+    b.className='hot on';b.style.left=h.x+'%';b.style.top=h.y+'%';
+    b.innerHTML='<span class="dot"></span><span class="hlab">'+esc(h.label)+'</span>';
+    b.onclick=function(ev){ev.preventDefault();ev.stopPropagation();
+      if(confirm('Remove the marker "'+h.label+'"?')){slideDraft.hotspots.splice(i,1);drawDraftHotspots();}};
+    box.appendChild(b);
+  });
+  $('#hslist').innerHTML=slideDraft.hotspots.map(function(h,i){
+    return '<span class="chip">'+(i+1)+'. '+esc(h.label)+'</span>'}).join('');
+}
+
+/* ================= wiring ================= */
+function initExtras(){
+  loadHisto();
+  renderPhysHome();
+  applyFeatures();
+  var hqs=$('#hqstart'); if(hqs)hqs.onclick=function(){
+    hqScore={n:0,r:0};$('#hqscore').textContent='0 / 0 correct';
+    $('#hqsetup').hidden=true;$('#hqplay').hidden=false;hqNext();
+  };
+  var hqb=$('#hqback'); if(hqb)hqb.onclick=function(){$('#hqplay').hidden=true;$('#hqsetup').hidden=false;};
+  ['bq','pq'].forEach(function(p){
+    var k=p==='bq'?'bio':'phys';
+    var s=$('#'+p+'start'); if(s)s.onclick=function(){CQ[k].score={n:0,r:0};$('#'+p+'score').textContent='0 / 0 correct';cqNext(k)};
+  });
+  $$('#animctl button').forEach(function(b){
+    b.onclick=function(){
+      var a=b.getAttribute('data-a');
+      if(a==='play'){anim.playing=!anim.playing;b.textContent=anim.playing?'Pause':'Play'}
+      if(a==='restart')anim.t=0;
+      if(a==='slow'){anim.speed=anim.speed===1?0.35:1;b.textContent=anim.speed===1?'Slow motion':'Normal speed'}
+    };
+  });
+  var si=$('#slimg');
+  if(si)si.addEventListener('change',function(e){
+    var f=e.target.files[0]; if(!f)return;
+    readAsDataURL(f).then(function(d){
+      slideDraft.data=d;slideDraft.name=f.name;slideDraft.type=f.type;slideDraft.size=f.size;
+      $('#hsbox').innerHTML='<img id="hsimg" src="'+d+'" alt="new slide">';
+      slideDraft.hotspots=[];drawDraftHotspots();
+      $('#hswrap').hidden=false;
+    });
+  });
+  var hb=$('#hsbox');
+  if(hb)hb.addEventListener('click',function(ev){
+    if(!slideDraft.data&&!slideDraft.file)return;
+    var r=hb.getBoundingClientRect();
+    var x=((ev.clientX-r.left)/r.width*100), y=((ev.clientY-r.top)/r.height*100);
+    var label=prompt('Label for this marker (for example "Germinal centre"):');
+    if(!label)return;
+    var info=prompt('Explanation: what it is, where it is found and what it does.')||'';
+    slideDraft.hotspots.push({x:+x.toFixed(2),y:+y.toFixed(2),label:label,info:info});
+    drawDraftHotspots();
+  });
+  var sv=$('#saveslide');
+  if(sv)sv.onclick=function(){
+    var m=$('#adminmsg');
+    if(!isAdmin())return say(m,'err','Sign in first.');
+    var t=$('#sltitle').value.trim();
+    if(!t)return say(m,'err','Give the slide a title.');
+    if(!slideDraft.data&&!slideDraft.file)return say(m,'err','Choose an image first.');
+    var item={id:slideDraft.id||('s'+Date.now().toString(36)),kind:'slide',title:t,
+      section:$('#slsection').value, desc:$('#sldesc').value.trim(), info:$('#slinfo').value.trim(),
+      hotspots:slideDraft.hotspots.slice(), date:new Date().toISOString()};
+    function finish(file){
+      item.file=file;
+      localPosts=localPosts.filter(function(x){return x.id!==item.id}).concat([item]);saveLocal();
+      remoteItems=remoteItems.filter(function(x){return x.id!==item.id}).concat([item]);
+      say(m,'ok','Slide saved. It is in the atlas and the histology quiz now.');
+      slideDraft={hotspots:[]};['#sltitle','#sldesc','#slinfo'].forEach(function(s){$(s).value=''});
+      $('#hswrap').hidden=true;renderSlideAdmin();renderHistoHome();
+    }
+    if(api().url){
+      say(m,'ok','Uploading the image\u2026');
+      apiPost({action:'upload',name:slideDraft.name,mime:slideDraft.type,b64:slideDraft.data.split(',')[1]})
+       .then(function(j){
+          apiPost({action:'save',item:Object.assign({},item,{file:j.view||j.url})}).then(function(){finish(j.view||j.url)});
+       }).catch(function(err){ finish(slideDraft.data); say(m,'err','Drive upload failed ('+err.message+') \u2014 saved on this device.'); });
+    } else { finish(slideDraft.data); }
+  };
+  var st=$('#slidetoggles');
+  if(st)st.addEventListener('click',function(e){
+    var id=e.target.getAttribute&&e.target.getAttribute('data-tog'); if(!id)return;
+    var s=settings(); s.hidden[id]=!s.hidden[id]; if(!s.hidden[id])delete s.hidden[id];
+    saveSettings(s);renderSlideAdmin();renderHistoHome();
+  });
+  var fb=$('#featureboxes');
+  if(fb)fb.addEventListener('change',function(e){
+    var k=e.target.getAttribute&&e.target.getAttribute('data-feat'); if(!k)return;
+    var s=settings(); s.features[k]=e.target.checked; saveSettings(s);
+  });
+}
+
 /* ---------------- router ---------------- */
 function currentRoute(){
   var h=(location.hash||'#/home').replace(/^#\/?/,'').split('/');
-  return [h[0]||'home',h[1]?decodeURIComponent(h[1]):null];
+  var n=h[0]||'home', a=h[1]?decodeURIComponent(h[1]):null;
+  if(n==='histology'&&a)n='histosection';
+  if(n==='physiology'&&a)n='anim';
+  return [n,a];
 }
 function route(){
   var r=currentRoute(),name=r[0];
@@ -1198,20 +2016,33 @@ function route(){
       :'<h2>Not found</h2><p>That item is not available on this device yet.</p>';
   }
   if(name==='clinical')renderList();
+  if(name==='histology')renderHistoHome();
+  if(name==='histosection')renderHistoSection(r[1]);
+  if(name==='slide')renderSlide(r[1]);
+  if(name==='histoquiz'){renderHistoQuizSetup();}
+  if(name==='physiology')renderPhysHome();
+  if(name==='anim')openAnim(r[1]);
+  if(name!=='anim')stopAnim();
+  if(name==='admin')renderSlideAdmin();
   if(name==='exams')renderExams();
   if(name==='exam')openExam(r[1]);
   if(name!=='exam'&&sniffTimer){clearInterval(sniffTimer);sniffTimer=null;var ef=$('#examframe');if(ef)ef.removeAttribute('srcdoc');}
   if(name==='admin'){var a=api();$('#apiurl').value=a.url||'';$('#apikey').value=a.key||'';}
-  var known={home:1,cycles:1,clinical:1,post:1,login:1,admin:1,exams:1,exam:1};
+  var known={home:1,cycles:1,clinical:1,post:1,login:1,admin:1,exams:1,exam:1,histology:1,histosection:1,slide:1,histoquiz:1,physiology:1,anim:1,bioquiz:1,physioquiz:1};
   if(!known[name])name='home';
   $$('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+name);});
+  $$('nav.main a').forEach(function(a){
+    var rt=a.getAttribute('data-route');
+    if(rt==='histology'&&(name==='histosection'||name==='slide'||name==='histoquiz'))a.classList.add('on');
+    if(rt==='physiology'&&(name==='anim'||name==='physioquiz'||name==='bioquiz'))a.classList.add('on');
+  });
   $$('nav.main a').forEach(function(a){
     a.classList.toggle('on',a.getAttribute('data-route')===name||(name==='post'&&a.getAttribute('data-route')==='clinical')||(name==='exam'&&a.getAttribute('data-route')==='exams'));});
   if(name==='cycles'){requestAnimationFrame(function(){if(!fitted)fit();else{clamp();apply();}});}
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
-refreshAuthUI();renderList();renderExams();drawChips();setKind('doc');route();
+refreshAuthUI();renderList();renderExams();drawChips();setKind('doc');initExtras();route();
 if(!fitted)setTimeout(function(){if(viewer.clientWidth&&!fitted)fit();},60);
 })();
 </script>
