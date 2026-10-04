@@ -312,7 +312,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 .thumbs{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));padding-bottom:40px}
 .thumb{display:block;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);text-decoration:none;color:inherit;transition:.15s}
 .thumb:hover{border-color:var(--line2);transform:translateY(-2px);box-shadow:var(--shadow)}
-.thumb img{display:block;width:100%;height:150px;object-fit:cover;background:#fff}
+.thumb img{display:block;width:100%;height:150px;object-fit:contain;background:#fff;padding:4px}
 .thumb span{display:block;padding:10px 12px;font-size:.9rem;font-weight:500}
 .slidehead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .slidewrap{display:grid;gap:18px;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);align-items:start}
@@ -1482,10 +1482,13 @@ function renderSlide(id){
       }).join('')+
     '</div>'+
     '<div class="slideinfo" id="slideinfo">'+
-      (s.hotspots&&s.hotspots.length?'<p class="muted">Hover a marker to see its name, click it for the full explanation.</p>'
-        :'<p class="muted">This slide has no markers yet. The structure it demonstrates is explained below; markers can be added from the Admin panel.</p>')+
+      (s.hotspots&&s.hotspots.length?'<p class="muted">Hover a marker for the name, click it for the full explanation.</p>'
+        :'<p class="muted">No markers on this panel yet \u2014 the structure it demonstrates is explained below. You can add markers from the Admin panel.</p>')+
       infoCard(s.term,s.info)+
     '</div></div>'+
+    (s.caption?'<div class="box"><h4 style="margin:0 0 6px">From the slide notes</h4><p style="margin:0">'+esc(s.caption)+'</p></div>':'')+
+    ((s.legend&&s.legend.length)?'<div class="box"><h4 style="margin:0 0 6px">Labels on this plate</h4><p style="margin:0">'+
+      s.legend.map(function(l){return '<b>'+esc(l.k)+'</b> '+esc(l.v)}).join(' &middot; ')+'</p></div>':'')+
     ((s.hotspots||[]).length?'<div class="chiprow" id="hotlist">'+s.hotspots.map(function(h,i){
         return '<button class="chip filter" data-i="'+i+'">'+esc(h.label)+'</button>';}).join('')+'</div>':'');
   var box=$('#slidebox');
@@ -1493,7 +1496,8 @@ function renderSlide(id){
     var h=s.hotspots[i];
     $$('#slidebox .hot').forEach(function(b,j){b.classList.toggle('on',j===i)});
     $$('#hotlist .chip').forEach(function(b,j){b.classList.toggle('on',j===i)});
-    $('#slideinfo').innerHTML='<h3 style="margin-top:0">'+esc(h.label)+'</h3>'+infoCard(h.term,h.info);
+    $('#slideinfo').innerHTML='<h3 style="margin-top:0">'+esc(h.label)+'</h3>'+
+      (infoCard(h.term,h.info)||'<div class="box key"><p style="margin:0">'+esc(s.caption||s.desc||'')+'</p></div>');
   }
   $$('#slidebox .hot').forEach(function(b){
     b.addEventListener('click',function(){showHot(parseInt(b.getAttribute('data-i'),10))});
@@ -1578,7 +1582,7 @@ function hqAnswer(i){
   });
   $('#hqscore').textContent=hqScore.r+' / '+hqScore.n+' correct';
   $('#hqfb').innerHTML='<div class="exp"><b>'+(ok?'Correct':'Not quite')+' &mdash; '+esc(q.correct)+'.</b> '+
-    (q.t?esc(q.t.what)+' <b>Where:</b> '+esc(q.t.where)+' <b>Function:</b> '+esc(q.t.fn):esc(q.slide.desc||''))+
+    (q.t?esc(q.t.what)+' <b>Where:</b> '+esc(q.t.where)+' <b>Function:</b> '+esc(q.t.fn):esc(q.slide.caption||q.slide.desc||''))+
     '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">'+
     '<a class="btn ghost small" href="#/slide/'+encodeURIComponent(q.slide.id)+'">Open this slide</a>'+
     '<button class="btn primary small" id="hqnext">Next question</button></div></div>';
