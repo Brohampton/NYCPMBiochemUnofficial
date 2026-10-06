@@ -684,6 +684,11 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
     </div>
     <div>
       <div class="adminbox" style="margin-bottom:22px">
+        <h3>Documents &amp; interactive exams</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-top:0">Hide anything you do not want visitors to see, and drag the order around with the arrows. Both apply to everyone as soon as you change them.</p>
+        <div id="itemorder"></div>
+      </div>
+      <div class="adminbox" style="margin-bottom:22px">
         <h3>Histology slide</h3>
         <div class="field"><label for="sltitle">Slide title</label><input id="sltitle" type="text" placeholder="e.g. Lymph node medulla"></div>
         <div class="field"><label for="slsection">Section</label><select id="slsection" style="width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 13px"></select></div>
@@ -1013,8 +1018,10 @@ function allItems(){
   return Object.keys(map).map(function(k){return map[k]})
     .sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});
 }
-function docs(){return allItems().filter(function(p){return !p.kind||p.kind==='doc'})}
-function exams(){return allItems().filter(function(p){return p.kind==='exam'})}
+function docs(){var hi=settings().hiddenItems||{};
+  return applyOrder(allItems().filter(function(p){return (!p.kind||p.kind==='doc')&&!hi[p.id]}))}
+function exams(){var hi=settings().hiddenItems||{};
+  return applyOrder(allItems().filter(function(p){return p.kind==='exam'&&!hi[p.id]}))}
 loadLocal();
 
 function pullRemote(){
@@ -1023,6 +1030,7 @@ function pullRemote(){
     var arr=j.items||j.posts||[];
     if(Array.isArray(arr)){remoteItems=arr.map(function(p){if(!p.kind)p.kind='doc';return p});}
     renderList();renderExams();renderAdminList();applyFeatures();
+    if(typeof renderItemAdmin==='function')renderItemAdmin();
     var r=currentRoute()[0]; if(r==='post'||r==='exam'||r==='slide'||r==='histosection'||r==='histology')route();
   }).catch(function(){});
 }
@@ -1281,7 +1289,7 @@ $('#adminlist').addEventListener('click',function(e){
     localPosts=localPosts.filter(function(x){return x.id!==dl});saveLocal();
     remoteItems=remoteItems.filter(function(x){return x.id!==dl});
     filePosts=filePosts.filter(function(x){return x.id!==dl});
-    renderAdminList();renderList();renderExams();
+    renderAdminList();renderList();renderExams();renderItemAdmin();
     if(api().url)apiPost({action:'delete',id:dl}).catch(function(err){alert('Deleted locally, but the backend said: '+err.message)});}
 });
 function drawChips(){
@@ -1342,7 +1350,7 @@ $('#savepost').addEventListener('click',function(){
   }
   function done(msg,cls){
     editingId=item.id;$('#editorTitle').textContent='Editing: '+item.title;
-    say(m,cls||'ok',msg);renderAdminList();renderList();renderExams();
+    say(m,cls||'ok',msg);renderAdminList();renderList();renderExams();renderItemAdmin();
   }
   if(api().url){
     say(m,'ok','Publishing\u2026');
@@ -1389,17 +1397,50 @@ $('#importfile').addEventListener('change',function(e){
 var SETID='site-settings';
 function settings(){
   var s=allItems().filter(function(x){return x.id===SETID})[0];
-  var d={features:{histology:true,physiology:true,bioquiz:true,physioquiz:true},hidden:{}};
+  var d={features:{histology:true,physiology:true,bioquiz:true,physioquiz:true},hidden:{},hiddenItems:{},order:{}};
   if(!s)return d;
-  return {features:Object.assign(d.features,s.features||{}),hidden:s.hidden||{}};
+  return {features:Object.assign(d.features,s.features||{}),hidden:s.hidden||{},
+          hiddenItems:s.hiddenItems||{},order:s.order||{}};
 }
 function saveSettings(st){
   var item={id:SETID,kind:'settings',title:'Site settings',date:new Date().toISOString(),
-            features:st.features,hidden:st.hidden};
+            features:st.features,hidden:st.hidden,hiddenItems:st.hiddenItems||{},order:st.order||{}};
   localPosts=localPosts.filter(function(x){return x.id!==SETID}).concat([item]);saveLocal();
   remoteItems=remoteItems.filter(function(x){return x.id!==SETID}).concat([item]);
-  if(api().url)apiPost({action:'save',item:item}).catch(function(){});
-  applyFeatures();
+  if(api().url)apiPost({action:'save',item:item}).catch(function(err){
+    alert('Saved on this device, but the change could not be sent to the backend: '+err.message);
+  });
+  applyFeatures();renderList();renderExams();
+  if(typeof renderItemAdmin==='function')renderItemAdmin();
+}
+
+/* order: items the admin has arranged come first, in that order; anything new stays newest-first */
+function applyOrder(list){
+  var o=settings().order||{};
+  return list.slice().sort(function(a,b){
+    var ao=o[a.id],bo=o[b.id];
+    if(ao!=null&&bo!=null)return ao-bo;
+    if(ao!=null)return -1;
+    if(bo!=null)return 1;
+    return (b.date||'').localeCompare(a.date||'');
+  });
+}
+function adminDocs(){return applyOrder(allItems().filter(function(p){return !p.kind||p.kind==='doc'}))}
+function adminExams(){return applyOrder(allItems().filter(function(p){return p.kind==='exam'}))}
+function setItemHidden(id,on){
+  var s=settings();
+  if(on)s.hiddenItems[id]=true; else delete s.hiddenItems[id];
+  saveSettings(s);
+}
+function moveItem(id,dir,kind){
+  var list=(kind==='exam'?adminExams():adminDocs());
+  var i=list.map(function(x){return x.id}).indexOf(id);
+  var j=i+dir;
+  if(i<0||j<0||j>=list.length)return;
+  var tmp=list[i];list[i]=list[j];list[j]=tmp;
+  var s=settings();
+  list.forEach(function(x,k){s.order[x.id]=k;});
+  saveSettings(s);
 }
 function applyFeatures(){
   var f=settings().features;
@@ -1887,6 +1928,35 @@ function cqAnswer(kind,i){
 
 /* ================= ADMIN: slides, hotspots, feature switches ================= */
 var slideDraft={hotspots:[]};
+function renderItemAdmin(){
+  var box=$('#itemorder'); if(!box)return;
+  var hid=settings().hiddenItems||{};
+  function group(title,list,kind){
+    if(!list.length)return '<h4 style="margin:12px 0 4px;font-size:.85rem;color:var(--muted)">'+title+'</h4>'+
+      '<p class="muted" style="margin:0 0 8px;font-size:.88rem">Nothing published yet.</p>';
+    return '<h4 style="margin:14px 0 6px;font-size:.85rem;color:var(--muted)">'+title+'</h4>'+
+      list.map(function(p,i){
+        var h=!!hid[p.id];
+        return '<div class="adminrow"'+(h?' style="opacity:.55"':'')+'>'+
+          '<b>'+(kind==='exam'?'\u25B6 ':'')+esc(p.title)+'</b>'+
+          (h?'<span class="statepill">hidden</span>':'')+
+          '<button class="btn ghost small" data-mv="up" data-kind="'+kind+'" data-id="'+esc(p.id)+'"'+(i===0?' disabled':'')+' aria-label="Move up">\u2191</button>'+
+          '<button class="btn ghost small" data-mv="down" data-kind="'+kind+'" data-id="'+esc(p.id)+'"'+(i===list.length-1?' disabled':'')+' aria-label="Move down">\u2193</button>'+
+          '<button class="btn ghost small" data-vis="'+esc(p.id)+'" data-on="'+(h?'1':'0')+'">'+(h?'Show':'Hide')+'</button>'+
+          '</div>';
+      }).join('');
+  }
+  box.innerHTML=group('Document Hub',adminDocs(),'doc')+group('Interactive exams',adminExams(),'exam');
+}
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(!t||!t.getAttribute)return;
+  var vis=t.getAttribute('data-vis');
+  if(vis!==null&&vis!==undefined){ setItemHidden(vis,t.getAttribute('data-on')!=='1'); return; }
+  var mv=t.getAttribute('data-mv');
+  if(mv){ moveItem(t.getAttribute('data-id'), mv==='up'?-1:1, t.getAttribute('data-kind')); }
+});
+
 function renderSlideAdmin(){
   var sel=$('#slsection'); if(!sel)return;
   if(!sel.options.length){
@@ -2027,7 +2097,7 @@ function route(){
   if(name==='physiology')renderPhysHome();
   if(name==='anim')openAnim(r[1]);
   if(name!=='anim')stopAnim();
-  if(name==='admin')renderSlideAdmin();
+  if(name==='admin'){renderSlideAdmin();renderItemAdmin();}
   if(name==='exams')renderExams();
   if(name==='exam')openExam(r[1]);
   if(name!=='exam'&&sniffTimer){clearInterval(sniffTimer);sniffTimer=null;var ef=$('#examframe');if(ef)ef.removeAttribute('srcdoc');}
