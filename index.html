@@ -372,6 +372,9 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 #animstage .thin{stroke:var(--c-lactate);stroke-width:3.5;stroke-linecap:round}
 #hsbox{position:relative;border:1px dashed var(--line2);border-radius:12px;overflow:hidden;min-height:60px;background:#fff}
 #hsbox img{width:100%;display:block}
+select.subsel{font:inherit;font-size:.82rem;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:4px 6px}
+.statepill.prog{border-color:var(--gold);color:var(--gold)}
+#acctbody .formcard{max-width:560px}
 .view{display:none}
 .view.on{display:block}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -390,7 +393,8 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
       <a href="#/clinical" data-route="clinical">Document Hub</a>
       <a href="#/exams" data-route="exams">Interactive exams</a>
       <a href="#/admin" data-route="admin" id="navadmin" hidden>Admin</a>
-      <a href="#/login" data-route="login" id="navlogin">Sign in</a>
+      <a href="#/account" data-route="account" id="navaccount">Sign in</a>
+      <a href="#/login" data-route="login" id="navlogin" hidden>Admin sign-in</a>
       <button class="iconbtn" id="themebtn" aria-label="Toggle dark mode" style="margin-left:6px">&#9789;</button>
     </nav>
   </div>
@@ -487,6 +491,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
       </div>
     </div>
     <div class="chiprow" id="jumps" style="margin:0 0 10px"></div>
+    <div id="bioextra" style="margin-top:10px"></div>
     <p class="hint">Drag to pan, scroll or pinch to zoom, double-tap to zoom in. Tap <b>+</b> on a panel to open it, <b>&minus;</b> to fold it away, and drag either panel by its header to move it anywhere on the map.</p>
   </div>
 </section>
@@ -495,7 +500,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 <section class="view" id="view-clinical">
   <div class="wrap pagehead"><h2>Document Hub <span style="font-size:.5em;color:var(--muted)">(Clinical Explanations Included)</span></h2>
   <p>Clinical explanations, exam PDFs, slides, images and interactive artifacts. Every file can be opened in the browser or downloaded &mdash; including on iPhone and iPad.</p></div>
-  <div class="wrap" style="padding-bottom:6px"><div id="hubfilter" class="chiprow"></div></div>
+  <div class="wrap" style="padding-bottom:4px"><div id="hubsubject" class="chiprow"></div></div><div class="wrap" style="padding-bottom:6px"><div id="hubfilter" class="chiprow"></div></div>
   <div class="wrap"><div class="postlist" id="postlist"></div></div>
 </section>
 
@@ -512,6 +517,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
     <p>Each person's answers, score and attempts are kept privately on their own device. Several people can sit the same exam at the same time without seeing each other's work.</p></div>
   <div class="wrap">
     <div class="box learnerbar" id="learnerbar"></div>
+    <div class="chiprow" id="examsubject" style="margin-bottom:12px"></div>
     <div class="postlist" id="examlist"></div>
   </div>
 </section>
@@ -536,9 +542,10 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
   <div class="wrap pagehead"><h2>Histology atlas</h2>
     <p>Pick a section to open its slide box. On a slide, hover or tap a marker to name the structure and click it for the full explanation.</p></div>
   <div class="wrap"><div class="cards tight" id="histosections"></div></div>
-  <div class="wrap" style="padding-bottom:48px">
+  <div class="wrap" style="padding-bottom:10px">
     <a class="btn primary" href="#/histoquiz">Start the slide quiz</a>
   </div>
+  <div class="wrap" style="padding-bottom:48px" id="histoextra"></div>
 </section>
 
 <!-- HISTOLOGY: one section -->
@@ -581,10 +588,11 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
   <div class="wrap pagehead"><h2>Physiology animations</h2>
     <p>Each concept runs as a loop with the current phase named underneath. Pause at any point, slow it down, or restart.</p></div>
   <div class="wrap"><div class="cards tight" id="physlist"></div></div>
-  <div class="wrap" style="padding-bottom:48px">
+  <div class="wrap" style="padding-bottom:10px">
     <a class="btn primary" href="#/physioquiz">Physiology concept quiz</a>
     <a class="btn ghost" href="#/bioquiz">Biochemistry concept quiz</a>
   </div>
+  <div class="wrap" style="padding-bottom:48px" id="physextra"></div>
 </section>
 
 <!-- PHYSIOLOGY: one animation -->
@@ -630,9 +638,18 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
   </div></div>
 </section>
 
+
+<!-- ACCOUNT -->
+<section class="view" id="view-account">
+  <div class="wrap pagehead"><h2>My account</h2>
+    <p>Make an account and every interactive exam you take is saved — answers, score and every attempt — on any device you sign in from.</p></div>
+  <div class="wrap" style="padding-bottom:60px"><div id="acctbody"></div>
+    <p class="hint" style="margin-top:18px">Site owner? <a href="#/login">Admin sign-in</a>.</p></div>
+</section>
+
 <!-- LOGIN -->
 <section class="view" id="view-login">
-  <div class="wrap pagehead"><h2>Sign in</h2><p>Accounts exist only so the site owner can publish. Everything on this site is readable without one.</p></div>
+  <div class="wrap pagehead"><h2>Owner sign-in</h2><p>This is the site owner’s admin login. Students should use <a href="#/account">My account</a> instead — that is where exam progress is saved.</p></div>
   <div class="wrap" style="padding-bottom:64px">
     <div class="formcard">
       <div id="loginmsg"></div>
@@ -662,6 +679,10 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
       </div>
       <div class="field"><label for="ptitle">Title (this is the clickable label)</label><input id="ptitle" type="text" placeholder="e.g. Practice Exam 2 &mdash; Chapters 5 to 9"></div>
       <div class="field"><label for="psum">Short summary (shown in the list)</label><input id="psum" type="text" placeholder="One sentence"></div>
+      <div class="field"><label for="psubject">Which section does it belong to?</label>
+        <select id="psubject" style="width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line2);border-radius:10px;padding:11px 13px">
+          <option value="biochem">Biochemistry</option><option value="histology">Histology</option><option value="physiology">Physiology</option>
+        </select></div>
       <div id="docfields">
         <div class="field"><label for="ptag">Category chip (optional)</label><input id="ptag" type="text" placeholder="e.g. Clinical explanation, Practice exam, Lecture notes"></div>
         <div class="field"><label for="pbody">Body text</label>
@@ -687,6 +708,14 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
         <h3>Documents &amp; interactive exams</h3>
         <p style="color:var(--muted);font-size:.9rem;margin-top:0">Hide anything you do not want visitors to see, and drag the order around with the arrows. Both apply to everyone as soon as you change them.</p>
         <div id="itemorder"></div>
+      </div>
+      <div class="adminbox" style="margin-bottom:22px">
+        <h3>User accounts</h3>
+        <p style="color:var(--muted);font-size:.9rem;margin-top:0">Everyone who has signed up, with their saved attempts. "Make a reset code" emails them a code and shows it here so you can read it out if their email is not working.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <button class="btn ghost small" id="loadusers">Load / refresh users</button>
+        </div>
+        <div id="userlist"></div>
       </div>
       <div class="adminbox" style="margin-bottom:22px">
         <h3>Histology slide</h3>
@@ -737,7 +766,7 @@ html[data-theme="dark"] .chip.pick.on{color:#08201e}
 
 <footer class="site"><div class="wrap fl">
   <span>&copy; <span id="yr"></span> NYCPM Unofficial &mdash; a student project, not affiliated with or endorsed by NYCPM.</span>
-  <a href="#/cycles" style="margin-left:auto">Cycles</a><a href="#/clinical">Clinical</a><a href="#/login" id="footlogin">Sign in</a>
+  <a href="#/cycles" style="margin-left:auto">Cycles</a><a href="#/clinical">Clinical</a><a href="#/account" id="footaccount">Sign in</a><a href="#/login" id="footlogin">Owner</a>
 </div></footer>
 <script>
 (function(){
@@ -935,7 +964,7 @@ window.addEventListener('resize',function(){clamp();apply();});
 /* ================= CONFIG ================= */
 /* Paste your Google Apps Script web-app URL between the quotes to publish for everyone.
    You can also set it from the Admin panel on your own device. */
-var API_URL = "https://script.google.com/macros/s/AKfycbxMjOUmfTuttXgMXzdryxNJxaRaxudGV4BA2A8TUMgatLEitbuF7m8lAFG4D6l_aiDc/exec";
+var API_URL = "https://script.google.com/macros/s/AKfycbyIpZ2bXCwcDNU0SFwklKa2rnIrSkRZbOfqBFme-tVwFbM5XACH7xrhMQn8zX4xES17/exec";
 
 /* ---------------- auth ---------------- */
 var ADMIN_EMAIL='brodielol856@gmail.com';
@@ -955,8 +984,9 @@ function setSession(on){on?localStorage.setItem(SKEY,'1'):localStorage.removeIte
 function refreshAuthUI(){
   var a=isAdmin();
   $('#navadmin').hidden=!a;
-  $('#navlogin').textContent=a?'Sign out':'Sign in';
-  $('#footlogin').textContent=a?'Sign out':'Sign in';
+  $('#navlogin').textContent=a?'Sign out':'Admin sign-in';
+  $('#navlogin').hidden=!a;
+  $('#footlogin').textContent=a?'Sign out':'Owner';
   if(a){$('#adminwho').textContent='Signed in as '+ADMIN_EMAIL+'.'+(api().url?' Publishing live through your Apps Script backend.':' No backend connected yet \u2014 items stay on this device until you connect one below.');}
   renderAdminList();
 }
@@ -1024,16 +1054,32 @@ function exams(){var hi=settings().hiddenItems||{};
   return applyOrder(allItems().filter(function(p){return p.kind==='exam'&&!hi[p.id]}))}
 loadLocal();
 
+var CACHEK='nycpm_cache_v2';
+var dataSettled=false;
+setTimeout(function(){ if(!dataSettled){dataSettled=true;renderList();renderExams();} },2500);
+function waiting(){ return !dataSettled && api().url; }
+function skeleton(){ return '<div class="empty">Loading the latest list\u2026</div>'; }
+function useCache(){
+  try{
+    var c=JSON.parse(localStorage.getItem(CACHEK));
+    if(c&&Array.isArray(c.items)){remoteItems=c.items.map(function(p){if(!p.kind)p.kind='doc';return p});dataSettled=true;return true}
+  }catch(e){}
+  return false;
+}
 function pullRemote(){
   return apiGet().then(function(j){
     if(!j)return;
     var arr=j.items||j.posts||[];
-    if(Array.isArray(arr)){remoteItems=arr.map(function(p){if(!p.kind)p.kind='doc';return p});}
+    if(Array.isArray(arr)){remoteItems=arr.map(function(p){if(!p.kind)p.kind='doc';return p});
+      try{localStorage.setItem(CACHEK,JSON.stringify({items:arr,at:Date.now()}))}catch(e){}}
+    dataSettled=true;
     renderList();renderExams();renderAdminList();applyFeatures();
     if(typeof renderItemAdmin==='function')renderItemAdmin();
+    if(typeof renderMyAttempts==='function')renderMyAttempts();
     var r=currentRoute()[0]; if(r==='post'||r==='exam'||r==='slide'||r==='histosection'||r==='histology')route();
   }).catch(function(){});
 }
+useCache();
 fetch('posts.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
   if(j){var arr=j.posts||j.items||j; if(Array.isArray(arr)){arr.forEach(function(p){if(!p.kind)p.kind='doc';});
     filePosts=arr;renderList();renderExams();renderAdminList();
@@ -1149,7 +1195,9 @@ $('#hubfilter').addEventListener('click',function(e){
 function renderList(){
   var box=$('#postlist');if(!box)return;
   renderFilter();
-  var posts=docs().filter(function(p){return hubFilter==='all'||p.tag===hubFilter;});
+  renderSubjectFilter('hub');
+  if(waiting()){box.innerHTML=skeleton();return;}
+  var posts=docs().filter(function(p){return (hubFilter==='all'||p.tag===hubFilter)&&(hubSubject==='all'||subjOf(p)===hubSubject);});
   if(!posts.length){box.innerHTML='<div class="empty">Nothing published here yet. Check back soon.</div>';return;}
   box.innerHTML=posts.map(function(p){
     var n=(p.attachments||[]).length;
@@ -1163,6 +1211,7 @@ function renderList(){
 /* ---------------- learner profiles (per person, per device) ---------------- */
 var LKEY='nycpm_learner_v1';
 function learner(){
+  if(signedIn())return {id:'acct:'+USER.email.toLowerCase(),name:USER.name||USER.email};
   var l=null;try{l=JSON.parse(localStorage.getItem(LKEY))}catch(e){}
   if(!l||!l.id){l={id:'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),name:''};
     try{localStorage.setItem(LKEY,JSON.stringify(l))}catch(e){}}
@@ -1173,7 +1222,14 @@ function newLearner(){var l={id:'u'+Date.now().toString(36)+Math.random().toStri
   try{localStorage.setItem(LKEY,JSON.stringify(l))}catch(e){}renderLearnerBar();renderExams();}
 function renderLearnerBar(){
   var bar=$('#learnerbar');if(!bar)return;var l=learner();
+  if(signedIn()){
+    bar.innerHTML='<b>Signed in as '+esc(USER.name||USER.email)+'.</b> <span class="mini" style="color:var(--muted);font-size:.84rem">'+
+      'Your answers, scores and attempts are saved to your account and follow you to any device.</span>'+
+      '<a class="btn ghost small" href="#/account">My results</a>';
+    return;
+  }
   bar.innerHTML='<b>Taking exams as:</b> <span id="lname">'+(l.name?esc(l.name):'this device')+'</span>'+
+    '<a class="btn primary small" href="#/account">Sign in to save my results</a>'+
     '<button class="btn ghost small" id="lrename">Set my name</button>'+
     '<button class="btn ghost small" id="lswitch">Someone else is using this device</button>'+
     '<span class="mini" style="color:var(--muted);font-size:.8rem">Your answers and scores stay on your own device and are never shown to anyone else.</span>';
@@ -1185,10 +1241,38 @@ function attemptKey(examId){return 'nycpm_att::'+examId+'::'+learner().id;}
 function attemptOf(examId){try{return JSON.parse(localStorage.getItem(attemptKey(examId)))||null}catch(e){return null}}
 function saveAttempt(examId,rec){try{localStorage.setItem(attemptKey(examId),JSON.stringify(rec))}catch(e){}}
 function examState(examId){
+  var pr=progressAll()[examId];
+  if(pr&&(pr.attempts||[]).length){
+    var l=pr.attempts[pr.attempts.length-1];
+    return {cls:'done',text:'Your last score: '+l.score+' ('+pr.attempts.length+' attempt'+(pr.attempts.length===1?'':'s')+')'};
+  }
+  if(pr&&pr.state)return {cls:'prog',text:'In progress'};
   var a=attemptOf(examId); if(a&&a.score)return {cls:'done',text:'Your last score: '+a.score};
   var pre=examPrefix(examId);
   for(var i=0;i<localStorage.length;i++){ if((localStorage.key(i)||'').indexOf(pre)===0) return {cls:'prog',text:'In progress'}; }
   return {cls:'',text:'Not started'};
+}
+var stateTimer=null,lastPushed={};
+function readExamState(examId){
+  var pre=examPrefix(examId),out={};
+  for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+    if(k&&k.indexOf(pre)===0)out[k.slice(pre.length)]=localStorage.getItem(k);}
+  return JSON.stringify(out);
+}
+function restoreExamState(examId){
+  var r=progressAll()[examId];
+  if(!r||!r.state)return;
+  try{
+    var o=JSON.parse(r.state),pre=examPrefix(examId),local=readExamState(examId);
+    if(local!=='{}'&&local.length>=r.state.length)return;   /* this device is ahead, keep it */
+    Object.keys(o).forEach(function(k){localStorage.setItem(pre+k,o[k])});
+  }catch(e){}
+}
+function syncExamState(examId){
+  var s=readExamState(examId);
+  if(s==='{}'||lastPushed[examId]===s)return;
+  lastPushed[examId]=s;
+  pushProgress(examId,s,null);
 }
 function clearExam(examId){
   var pre=examPrefix(examId),kill=[];
@@ -1197,8 +1281,10 @@ function clearExam(examId){
   localStorage.removeItem(attemptKey(examId));
 }
 function renderExams(){
-  var box=$('#examlist');if(!box)return;renderLearnerBar();
-  var list=exams();
+  renderSubjectAreas();
+  var box=$('#examlist');if(!box)return;renderLearnerBar();renderSubjectFilter('exam');
+  if(waiting()){box.innerHTML=skeleton();return;}
+  var list=exams().filter(function(p){return examSubject==='all'||subjOf(p)===examSubject});
   if(!list.length){box.innerHTML='<div class="empty">No interactive exams published yet.</div>';return;}
   box.innerHTML=list.map(function(p){
     var st=examState(p.id);
@@ -1231,9 +1317,13 @@ function openExam(id){
   $('#examwho').textContent='Answers saved for: '+(l.name||'this device');
   $('#examnote').textContent='Your answers save automatically. Leave and come back any time \u2014 nobody else sees your attempt, and other people can sit the same exam at the same moment.';
   var code=p.code||'';
+  restoreExamState(p.id);
   fr.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-downloads');
   fr.srcdoc=examShim(p.id)+code;
-  $('#examreset').onclick=function(){ if(!confirm('Clear your own answers for this exam?'))return; clearExam(p.id); fr.srcdoc=examShim(p.id)+code; renderExams(); };
+  if(stateTimer)clearInterval(stateTimer);
+  stateTimer=setInterval(function(){syncExamState(p.id)},8000);
+  $('#examreset').onclick=function(){ if(!confirm('Clear your own answers for this exam?'))return; clearExam(p.id);
+    pushProgress(p.id,null,null,true); fr.srcdoc=examShim(p.id)+code; renderExams(); };
   $('#examfull').onclick=function(){
     if(fr.requestFullscreen)fr.requestFullscreen();
     else openFile({name:p.title+'.html',type:'text/html',data:'data:text/html;charset=utf-8,'+encodeURIComponent(code)});
@@ -1246,8 +1336,11 @@ function openExam(id){
       if(pct&&pct.textContent&&pct.textContent!=='0%'&&line&&line.textContent){
         var prev=attemptOf(p.id)||{};
         if(prev.detail!==line.textContent||prev.score!==pct.textContent){
-          saveAttempt(p.id,{score:pct.textContent,detail:line.textContent,at:new Date().toISOString(),
-                            attempts:(prev.attempts||0)+1});
+          var rec={score:pct.textContent,detail:line.textContent,at:new Date().toISOString(),
+                   attempts:(prev.attempts||0)+1};
+          saveAttempt(p.id,rec);
+          pushProgress(p.id,readExamState(p.id),{score:rec.score,detail:rec.detail,at:rec.at});
+          renderExams();
         }
       }
     }catch(e){}
@@ -1282,6 +1375,7 @@ $('#adminlist').addEventListener('click',function(e){
   if(ed){var p=allItems().filter(function(x){return x.id===ed})[0];if(!p)return;
     editingId=p.id;setKind(p.kind==='exam'?'exam':'doc');
     $('#ptitle').value=p.title;$('#psum').value=p.summary||'';$('#ptag').value=p.tag||'';
+    if($('#psubject'))$('#psubject').value=subjOf(p);
     $('#pbody').value=p.body||'';$('#partifact').value=p.artifact||'';$('#examcode').value=p.code||'';
     attachments=(p.attachments||[]).slice();drawChips();$('#editorTitle').textContent='Editing: '+p.title;
     window.scrollTo({top:0,behavior:'smooth'});}
@@ -1338,7 +1432,8 @@ $('#savepost').addEventListener('click',function(){
   if(!isAdmin())return say(m,'err','Sign in first.');
   if(!t)return say(m,'err','Give it a title.');
   var item={id:editingId||((editKind==='exam'?'x':'p')+Date.now().toString(36)),kind:editKind,title:t,
-            summary:$('#psum').value.trim(),date:new Date().toISOString()};
+            summary:$('#psum').value.trim(),subject:($('#psubject')?$('#psubject').value:'biochem'),
+            date:new Date().toISOString()};
   if(editKind==='exam'){
     item.code=$('#examcode').value;
     if(!item.code.trim())return say(m,'err','Paste the exam code, or upload the .html file.');
@@ -1942,11 +2037,25 @@ function renderItemAdmin(){
           (h?'<span class="statepill">hidden</span>':'')+
           '<button class="btn ghost small" data-mv="up" data-kind="'+kind+'" data-id="'+esc(p.id)+'"'+(i===0?' disabled':'')+' aria-label="Move up">\u2191</button>'+
           '<button class="btn ghost small" data-mv="down" data-kind="'+kind+'" data-id="'+esc(p.id)+'"'+(i===list.length-1?' disabled':'')+' aria-label="Move down">\u2193</button>'+
+          '<select class="subsel" data-sub="'+esc(p.id)+'">'+
+            SUBJECTS.map(function(s){return '<option value="'+s.id+'"'+(subjOf(p)===s.id?' selected':'')+'>'+s.name+'</option>'}).join('')+
+          '</select>'+
           '<button class="btn ghost small" data-vis="'+esc(p.id)+'" data-on="'+(h?'1':'0')+'">'+(h?'Show':'Hide')+'</button>'+
           '</div>';
       }).join('');
   }
   box.innerHTML=group('Document Hub',adminDocs(),'doc')+group('Interactive exams',adminExams(),'exam');
+  $$('#itemorder .subsel').forEach(function(sel){
+    sel.onchange=function(){
+      var id=sel.getAttribute('data-sub');
+      var p=allItems().filter(function(x){return x.id===id})[0]; if(!p)return;
+      var copy=Object.assign({},p,{subject:sel.value});
+      localPosts=localPosts.filter(function(x){return x.id!==id}).concat([copy]);saveLocal();
+      remoteItems=remoteItems.filter(function(x){return x.id!==id}).concat([copy]);
+      if(api().url)apiPost({action:'save',item:copy}).catch(function(e){alert('Moved here, but the backend said: '+e.message)});
+      renderItemAdmin();renderList();renderExams();
+    };
+  });
 }
 document.addEventListener('click',function(e){
   var t=e.target;
@@ -2073,6 +2182,238 @@ function initExtras(){
   });
 }
 
+
+/* ================= SUBJECTS ================= */
+var SUBJECTS=[{id:'biochem',name:'Biochemistry'},{id:'histology',name:'Histology'},{id:'physiology',name:'Physiology'}];
+function subjName(id){var s=SUBJECTS.filter(function(x){return x.id===id})[0];return s?s.name:'Biochemistry'}
+function subjOf(p){return p.subject||'biochem'}
+var hubSubject='all', examSubject='all';
+
+/* ================= USER ACCOUNTS ================= */
+var UKEY='nycpm_user_v1';
+var USER=null;
+function loadUser(){try{USER=JSON.parse(localStorage.getItem(UKEY))||null}catch(e){USER=null}return USER}
+function saveUser(u){USER=u;try{u?localStorage.setItem(UKEY,JSON.stringify(u)):localStorage.removeItem(UKEY)}catch(e){}refreshUserUI()}
+function signedIn(){return !!(USER&&USER.token)}
+function pwHash(email,pass){
+  if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error('This browser blocks secure hashing. Open the site over https.'));
+  var enc=new TextEncoder();
+  return crypto.subtle.importKey('raw',enc.encode(pass),{name:'PBKDF2'},false,['deriveBits'])
+    .then(function(k){return crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode('nycpm:'+String(email).trim().toLowerCase()),
+      iterations:150000,hash:'SHA-256'},k,256)})
+    .then(function(buf){var b=new Uint8Array(buf),s='';for(var i=0;i<b.length;i++)s+=('0'+b[i].toString(16)).slice(-2);return s});
+}
+function userPost(payload){
+  var a=api();
+  if(!a.url)return Promise.reject(new Error('The site is not connected to its backend yet.'));
+  return fetch(a.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(r){return r.json()})
+    .then(function(j){if(j&&j.error)throw new Error(j.error);return j});
+}
+function refreshUserUI(){
+  var el=$('#navaccount');
+  if(el)el.textContent=signedIn()?(USER.name||USER.email.split('@')[0]):'Sign in';
+  var f=$('#footaccount'); if(f)f.textContent=signedIn()?'My account':'Sign in';
+  renderAccount();
+  renderExams();
+}
+
+/* ---- account page ---- */
+var acctTab='in';
+function renderAccount(){
+  var box=$('#acctbody'); if(!box)return;
+  if(signedIn()){
+    box.innerHTML='<div class="card"><h3 style="margin-top:0">Signed in as '+esc(USER.name||'')+' <span class="muted">'+esc(USER.email)+'</span></h3>'+
+      '<p class="muted">Your exam answers and scores follow this account on any device.</p>'+
+      '<div class="nav"><button class="btn ghost" id="signoutbtn">Sign out</button>'+
+      '<button class="btn ghost" id="refreshprog">Refresh my results</button></div></div>'+
+      '<div class="card" style="margin-top:18px"><h3 style="margin-top:0">My exam attempts</h3><div id="myattempts"></div></div>';
+    $('#signoutbtn').onclick=function(){saveUser(null);location.hash='#/account'};
+    $('#refreshprog').onclick=function(){pullProgress(true)};
+    renderMyAttempts();
+    return;
+  }
+  var tabs='<div class="chiprow" style="margin-bottom:12px">'+
+    [['in','Sign in'],['up','Create account'],['forgot','Forgot password']].map(function(t){
+      return '<button class="chip pick'+(acctTab===t[0]?' on':'')+'" data-at="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
+  var form='';
+  if(acctTab==='in')form='<div class="field"><label for="ue">Email</label><input id="ue" type="email" autocomplete="username"></div>'+
+      '<div class="field"><label for="up">Password</label><input id="up" type="password" autocomplete="current-password"></div>'+
+      '<button class="btn primary" id="dosignin">Sign in</button>';
+  if(acctTab==='up')form='<div class="field"><label for="un">Your name (optional)</label><input id="un" type="text"></div>'+
+      '<div class="field"><label for="ue">Email</label><input id="ue" type="email" autocomplete="username"></div>'+
+      '<div class="field"><label for="up">Password (at least 8 characters)</label><input id="up" type="password" autocomplete="new-password"></div>'+
+      '<button class="btn primary" id="dosignup">Create account</button>';
+  if(acctTab==='forgot')form='<p class="muted">Enter your email and we will send a six-digit code to it. Then come back here with the code and your new password.</p>'+
+      '<div class="field"><label for="ue">Email</label><input id="ue" type="email"></div>'+
+      '<button class="btn ghost" id="dosendcode">Send me a code</button>'+
+      '<hr style="border:0;border-top:1px solid var(--line);margin:16px 0">'+
+      '<div class="field"><label for="uc">Code from the email</label><input id="uc" type="text" inputmode="numeric"></div>'+
+      '<div class="field"><label for="up">New password</label><input id="up" type="password" autocomplete="new-password"></div>'+
+      '<button class="btn primary" id="doreset">Set new password</button>';
+  box.innerHTML='<div class="formcard">'+tabs+'<div id="acctmsg"></div>'+form+
+    '<p class="mini" style="color:var(--muted);font-size:.82rem;margin-top:14px">An account is only needed to keep your exam results. Everything else on the site is free to read without one.</p></div>';
+  $$('#acctbody .chip.pick').forEach(function(b){b.onclick=function(){acctTab=b.getAttribute('data-at');renderAccount()}});
+  var m=function(){return $('#acctmsg')};
+  function val(id){var e=$(id);return e?e.value.trim():''}
+  if($('#dosignin'))$('#dosignin').onclick=function(){
+    var em=val('#ue'),pw=$('#up').value;
+    if(!em||!pw)return say(m(),'err','Email and password, please.');
+    say(m(),'ok','Signing in\u2026');
+    pwHash(em,pw).then(function(h){return userPost({action:'login',email:em,pwHash:h})})
+      .then(function(j){saveUser({token:j.token,email:j.user.email,name:j.user.name});pullProgress();location.hash='#/account'})
+      .catch(function(e){say(m(),'err',e.message)});
+  };
+  if($('#dosignup'))$('#dosignup').onclick=function(){
+    var em=val('#ue'),pw=$('#up').value,nm=val('#un');
+    if(!em||pw.length<8)return say(m(),'err','Use a valid email and a password of at least 8 characters.');
+    say(m(),'ok','Creating your account\u2026');
+    pwHash(em,pw).then(function(h){return userPost({action:'signup',email:em,name:nm,pwHash:h})})
+      .then(function(j){saveUser({token:j.token,email:j.user.email,name:j.user.name});location.hash='#/account'})
+      .catch(function(e){say(m(),'err',e.message)});
+  };
+  if($('#dosendcode'))$('#dosendcode').onclick=function(){
+    var em=val('#ue');
+    if(!em)return say(m(),'err','Enter your email first.');
+    say(m(),'ok','Sending\u2026');
+    userPost({action:'forgot',email:em}).then(function(j){
+      say(m(),'ok',j.mailed===false?'A code was created but the email could not be sent \u2014 ask the site owner to read it to you.'
+        :'If that email has an account, a code is on its way. It is valid for 30 minutes.');
+    }).catch(function(e){say(m(),'err',e.message)});
+  };
+  if($('#doreset'))$('#doreset').onclick=function(){
+    var em=val('#ue'),code=val('#uc'),pw=$('#up').value;
+    if(!em||!code||pw.length<8)return say(m(),'err','Email, the code, and a new password of at least 8 characters.');
+    say(m(),'ok','Setting your new password\u2026');
+    pwHash(em,pw).then(function(h){return userPost({action:'reset',email:em,code:code,pwHash:h})})
+      .then(function(j){saveUser({token:j.token,email:j.user.email,name:j.user.name});pullProgress();location.hash='#/account'})
+      .catch(function(e){say(m(),'err',e.message)});
+  };
+}
+function renderMyAttempts(){
+  var box=$('#myattempts'); if(!box)return;
+  var pr=progressAll(), ids=Object.keys(pr);
+  if(!ids.length){box.innerHTML='<p class="muted" style="margin:0">No attempts yet. Open any interactive exam and your answers will be kept here.</p>';return;}
+  box.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.9rem">'+
+    '<tr><th style="text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)">Exam</th>'+
+    '<th style="text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)">Attempts</th>'+
+    '<th style="text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)">Last score</th>'+
+    '<th style="text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)">When</th></tr>'+
+    ids.map(function(id){
+      var r=pr[id], ex=allItems().filter(function(x){return x.id===id})[0];
+      var last=(r.attempts||[]).slice(-1)[0]||{};
+      return '<tr><td style="padding:6px 4px;border-bottom:1px solid var(--line)">'+
+        (ex?'<a href="#/exam/'+encodeURIComponent(id)+'">'+esc(ex.title)+'</a>':esc(id))+'</td>'+
+        '<td style="padding:6px 4px;border-bottom:1px solid var(--line)">'+((r.attempts||[]).length||(r.state?'in progress':'0'))+'</td>'+
+        '<td style="padding:6px 4px;border-bottom:1px solid var(--line)">'+esc(last.score||'\u2014')+'</td>'+
+        '<td style="padding:6px 4px;border-bottom:1px solid var(--line)" class="muted">'+esc((r.updated||'').slice(0,10))+'</td></tr>';
+    }).join('')+'</table>';
+}
+
+/* ---- progress sync ---- */
+var PKEY2='nycpm_progress_v1';
+function progressAll(){try{return JSON.parse(localStorage.getItem(PKEY2))||{}}catch(e){return {}}}
+function progressSet(id,rec){var p=progressAll();p[id]=rec;try{localStorage.setItem(PKEY2,JSON.stringify(p))}catch(e){}}
+function pullProgress(tell){
+  if(!signedIn())return Promise.resolve();
+  return userPost({action:'progressGet',token:USER.token}).then(function(j){
+    try{localStorage.setItem(PKEY2,JSON.stringify(j.progress||{}))}catch(e){}
+    renderMyAttempts();renderExams();
+    if(tell)alert('Results refreshed from your account.');
+  }).catch(function(e){
+    if(/Signed out/i.test(e.message)){saveUser(null);}
+  });
+}
+function pushProgress(examId,state,attempt,clear){
+  var rec=progressAll()[examId]||{examId:examId,attempts:[]};
+  if(state!==undefined&&state!==null)rec.state=state;
+  if(clear)rec.state=null;
+  if(attempt){
+    rec.attempts=rec.attempts||[];
+    var last=rec.attempts[rec.attempts.length-1];
+    if(!last||last.score!==attempt.score||last.detail!==attempt.detail)rec.attempts.push(attempt);
+  }
+  rec.updated=new Date().toISOString();
+  progressSet(examId,rec);
+  if(signedIn())userPost({action:'progressSave',token:USER.token,examId:examId,state:state,attempt:attempt,clear:!!clear}).catch(function(){});
+}
+
+/* ================= ADMIN: users ================= */
+function renderUserAdmin(){
+  var box=$('#userlist'); if(!box)return;
+  box.innerHTML='<p class="muted" style="margin:0">Loading\u2026</p>';
+  apiPost({action:'users'}).then(function(j){
+    var us=j.users||[];
+    if(!us.length){box.innerHTML='<p class="muted" style="margin:0">Nobody has made an account yet.</p>';return;}
+    box.innerHTML=us.map(function(u){
+      return '<div class="adminrow" style="flex-wrap:wrap">'+
+        '<b>'+esc(u.name||u.email.split('@')[0])+'</b>'+
+        '<span class="statepill">'+esc(u.email)+'</span>'+
+        '<span class="statepill">'+u.attempts+' attempt'+(u.attempts===1?'':'s')+'</span>'+
+        (u.hasReset?'<span class="statepill prog">reset pending</span>':'')+
+        '<button class="btn ghost small" data-ureset="'+esc(u.email)+'">Make a reset code</button>'+
+        '<button class="btn danger small" data-udel="'+esc(u.email)+'">Delete</button>'+
+        ((u.exams||[]).length?'<div style="flex-basis:100%;font-size:.82rem;color:var(--muted);margin-top:4px">'+
+          u.exams.map(function(x){
+            var ex=allItems().filter(function(i){return i.id===x.examId})[0];
+            return esc(ex?ex.title:x.examId)+' \u2014 '+x.attempts+' attempt'+(x.attempts===1?'':'s')+(x.last?', last '+esc(x.last):'');
+          }).join(' &middot; ')+'</div>':'')+
+        '</div>';
+    }).join('');
+  }).catch(function(e){box.innerHTML='<p class="msg err">Could not load users: '+esc(e.message)+'</p>'});
+}
+document.addEventListener('click',function(e){
+  var t=e.target; if(!t||!t.getAttribute)return;
+  var r=t.getAttribute('data-ureset');
+  if(r){
+    if(!confirm('Create a reset code for '+r+'? It is emailed to them and shown to you.'))return;
+    apiPost({action:'adminReset',email:r}).then(function(j){
+      alert('Reset code for '+r+': '+j.code+'\n\nIt was emailed to them as well and is valid for 24 hours. They enter it under Forgot password with a new password.');
+      renderUserAdmin();
+    }).catch(function(err){alert(err.message)});
+    return;
+  }
+  var dl=t.getAttribute('data-udel');
+  if(dl){
+    if(!confirm('Delete the account for '+dl+' and all of its saved attempts?'))return;
+    apiPost({action:'deleteUser',email:dl}).then(renderUserAdmin).catch(function(err){alert(err.message)});
+  }
+});
+
+/* ================= SUBJECT SECTIONS ON EACH TAB ================= */
+function renderSubjectBlocks(subject){
+  if(waiting())return skeleton();
+  var d=docs().filter(function(p){return subjOf(p)===subject});
+  var x=exams().filter(function(p){return subjOf(p)===subject});
+  function list(items,kind){
+    if(!items.length)return '<div class="empty">Nothing here yet.</div>';
+    return '<div class="postlist">'+items.map(function(p){
+      var st=kind==='exam'?examState(p.id):null;
+      return '<a class="postitem" href="#/'+(kind==='exam'?'exam':'post')+'/'+encodeURIComponent(p.id)+'"><div><h3>'+esc(p.title)+'</h3>'+
+        (p.summary?'<p>'+esc(p.summary)+'</p>':'')+
+        (st?'<div class="rowbtns"><span class="statepill '+st.cls+'">'+esc(st.text)+'</span></div>':'')+
+        '</div><span class="meta">'+esc((p.date||'').slice(0,10))+'</span></a>';
+    }).join('')+'</div>';
+  }
+  return '<h3 style="margin-top:26px">'+subjName(subject)+' documents</h3>'+list(d,'doc')+
+         '<h3 style="margin-top:22px">'+subjName(subject)+' interactive exams</h3>'+list(x,'exam');
+}
+function renderSubjectAreas(){
+  var h=$('#histoextra'); if(h)h.innerHTML=renderSubjectBlocks('histology');
+  var p=$('#physextra'); if(p)p.innerHTML=renderSubjectBlocks('physiology');
+  var b=$('#bioextra');  if(b)b.innerHTML=renderSubjectBlocks('biochem');
+}
+function renderSubjectFilter(which){
+  var box=$(which==='hub'?'#hubsubject':'#examsubject'); if(!box)return;
+  var cur=which==='hub'?hubSubject:examSubject;
+  box.innerHTML=[['all','Everything']].concat(SUBJECTS.map(function(s){return [s.id,s.name]}))
+    .map(function(t){return '<button class="chip filter'+(cur===t[0]?' on':'')+'" data-sf="'+t[0]+'">'+t[1]+'</button>'}).join('');
+  box.onclick=function(e){
+    var v=e.target.getAttribute&&e.target.getAttribute('data-sf'); if(!v)return;
+    if(which==='hub'){hubSubject=v;renderList();}else{examSubject=v;renderExams();}
+  };
+}
+
 /* ---------------- router ---------------- */
 function currentRoute(){
   var h=(location.hash||'#/home').replace(/^#\/?/,'').split('/');
@@ -2090,6 +2431,7 @@ function route(){
       :'<h2>Not found</h2><p>That item is not available on this device yet.</p>';
   }
   if(name==='clinical')renderList();
+  if(name==='account')renderAccount();
   if(name==='histology')renderHistoHome();
   if(name==='histosection')renderHistoSection(r[1]);
   if(name==='slide')renderSlide(r[1]);
@@ -2097,12 +2439,15 @@ function route(){
   if(name==='physiology')renderPhysHome();
   if(name==='anim')openAnim(r[1]);
   if(name!=='anim')stopAnim();
-  if(name==='admin'){renderSlideAdmin();renderItemAdmin();}
+  if(name==='admin'){renderSlideAdmin();renderItemAdmin();
+    if($('#loadusers'))$('#loadusers').onclick=renderUserAdmin;}
   if(name==='exams')renderExams();
   if(name==='exam')openExam(r[1]);
-  if(name!=='exam'&&sniffTimer){clearInterval(sniffTimer);sniffTimer=null;var ef=$('#examframe');if(ef)ef.removeAttribute('srcdoc');}
+  if(name!=='exam'&&sniffTimer){clearInterval(sniffTimer);sniffTimer=null;
+    if(stateTimer){clearInterval(stateTimer);stateTimer=null;}
+    var ef=$('#examframe');if(ef)ef.removeAttribute('srcdoc');}
   if(name==='admin'){var a=api();$('#apiurl').value=a.url||'';$('#apikey').value=a.key||'';}
-  var known={home:1,cycles:1,clinical:1,post:1,login:1,admin:1,exams:1,exam:1,histology:1,histosection:1,slide:1,histoquiz:1,physiology:1,anim:1,bioquiz:1,physioquiz:1};
+  var known={home:1,cycles:1,clinical:1,post:1,login:1,admin:1,exams:1,exam:1,account:1,histology:1,histosection:1,slide:1,histoquiz:1,physiology:1,anim:1,bioquiz:1,physioquiz:1};
   if(!known[name])name='home';
   $$('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+name);});
   $$('nav.main a').forEach(function(a){
@@ -2116,7 +2461,10 @@ function route(){
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
-refreshAuthUI();renderList();renderExams();drawChips();setKind('doc');initExtras();route();
+loadUser();refreshAuthUI();renderList();renderExams();drawChips();setKind('doc');initExtras();route();
+refreshUserUI();
+if(signedIn())userPost({action:'me',token:USER.token}).then(function(j){saveUser({token:USER.token,email:j.user.email,name:j.user.name});pullProgress();})
+  .catch(function(e){if(/Signed out/i.test(e.message))saveUser(null);});
 if(!fitted)setTimeout(function(){if(viewer.clientWidth&&!fitted)fit();},60);
 })();
 </script>
